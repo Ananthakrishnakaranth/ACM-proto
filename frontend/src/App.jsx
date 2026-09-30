@@ -4,6 +4,7 @@ import MediaVerifier from './components/MediaVerifier';
 import LiveLiveness from './components/LiveLiveness';
 import ApiKeyModal from './components/ApiKeyModal';
 import PhilosophyModal from './components/PhilosophyModal';
+import RoadmapModal from './components/RoadmapModal';
 import AskVeriLensDrawer from './components/AskVeriLensDrawer';
 import { SAMPLE_CASES } from './data/sampleCases';
 import { ShieldCheck, Scan, Eye, Heart, Layers, Camera, HelpCircle, Sparkles } from 'lucide-react';
@@ -13,6 +14,7 @@ export default function App() {
   const [apiKey, setApiKey] = useState('');
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isPhilosophyModalOpen, setIsPhilosophyModalOpen] = useState(false);
+  const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
   const [isChatDrawerOpen, setIsChatDrawerOpen] = useState(false);
 
   // Active Media report state initialized with first sample for immediate wow factor!
@@ -60,6 +62,7 @@ export default function App() {
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         hasApiKey={!!apiKey}
         onOpenPhilosophyModal={() => setIsPhilosophyModalOpen(true)}
+        onOpenRoadmapModal={() => setIsRoadmapModalOpen(true)}
         onSelectSampleCase={handleSelectSampleCase}
         samples={SAMPLE_CASES}
       />
@@ -163,6 +166,11 @@ export default function App() {
       <PhilosophyModal
         isOpen={isPhilosophyModalOpen}
         onClose={() => setIsPhilosophyModalOpen(false)}
+      />
+
+      <RoadmapModal
+        isOpen={isRoadmapModalOpen}
+        onClose={() => setIsRoadmapModalOpen(false)}
       />
 
       <AskVeriLensDrawer

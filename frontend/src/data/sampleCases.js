@@ -4,14 +4,14 @@ export const SAMPLE_CASES = [
     title: "AI-Generated Hyperrealistic Portrait (Flux / Midjourney v6)",
     badge: "High Synthetic Likelihood",
     category: "Image Verification",
-    thumbnail: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+    thumbnail: "/samples/synthetic_portrait.jpg",
     description: "Photorealistic portrait exhibiting subtle specular pupil mismatches, unnatural skin pore distribution, and stripped hardware EXIF.",
     metadata: {
-      filename: "ai_portrait_flux_render.png",
+      filename: "ai_portrait_flux_render.jpg",
       file_size_kb: 1420.5,
       md5_hash: "7f9b8c2d1e0a4f5c6b7a8d9e0f1a2b3c",
-      format: "PNG",
-      mime_type: "image/png",
+      format: "JPEG",
+      mime_type: "image/jpeg",
       dimensions: { width: 1024, height: 1024 },
       aspect_ratio: "1.0 (1024:1024)",
       color_mode: "RGB",
@@ -41,6 +41,18 @@ export const SAMPLE_CASES = [
       verdict_category: "Likely Synthetic / Generated",
       confidence: "High",
       confidence_explanation: "Identified 4 mutually reinforcing indicators across visual symmetry, corneal optics, and metadata header characteristics.",
+      ai_assessment: {
+        is_ai_generated: "Likely AI-Generated",
+        ai_likelihood: "High",
+        confidence_score: "89% evidentiary correlation",
+        suspected_generator: "Diffusion Architecture (Flux.1 / Midjourney v6)",
+        key_signatures: [
+          "Corneal specular reflection asymmetry",
+          "Stripped camera hardware EXIF",
+          "Square 1024x1024 latent canvas signature",
+          "Sub-surface dermal scattering boundary drop"
+        ]
+      },
       findings: [
         {
           id: "focal_specular_reflection",
@@ -99,7 +111,7 @@ export const SAMPLE_CASES = [
     title: "Manipulated ID Photo (Face-Swap Inpainting)",
     badge: "Tampered Region Detected",
     category: "Image Verification",
-    thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+    thumbnail: "/samples/face_swapped_id.jpg",
     description: "Formal identification headshot showing localized JPEG compression boundary mismatches and blending seam artifacts along the jaw and collarline.",
     metadata: {
       filename: "id_document_applicant_crop.jpg",
@@ -107,8 +119,8 @@ export const SAMPLE_CASES = [
       md5_hash: "3b2c1a0f9e8d7c6b5a4f3e2d1c0b9a8f",
       format: "JPEG",
       mime_type: "image/jpeg",
-      dimensions: { width: 800, height: 1000 },
-      aspect_ratio: "0.8 (4:5)",
+      dimensions: { width: 1024, height: 1024 },
+      aspect_ratio: "1.0 (1024:1024)",
       color_mode: "RGB",
       has_exif: true,
       camera_make: "Generic Scanner",
@@ -130,6 +142,17 @@ export const SAMPLE_CASES = [
       verdict_category: "Potential Manipulation / Inpainting",
       confidence: "High",
       confidence_explanation: "Inconsistent noise grain variance and seam gradients specifically isolated to the facial boundary oval.",
+      ai_assessment: {
+        is_ai_generated: "AI Manipulation / Face-Swap",
+        ai_likelihood: "High (Localized Inpainting)",
+        confidence_score: "86% evidentiary correlation",
+        suspected_generator: "Neural Inpainting / Layer Composite (Photoshop 24)",
+        key_signatures: [
+          "Poisson contour blending halo along collar",
+          "Differential noise grain quantization",
+          "Desktop raster editing software tag"
+        ]
+      },
       findings: [
         {
           id: "focal_boundary_seam",
@@ -178,7 +201,7 @@ export const SAMPLE_CASES = [
     title: "Authentic Optical Capture (Sony Alpha 7 IV)",
     badge: "Consistent Optical Physics",
     category: "Image Verification",
-    thumbnail: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+    thumbnail: "/samples/authentic_dslr.jpg",
     description: "Genuine photographic portrait with full camera telemetry, coherent lens depth of field, and continuous natural Bayer sensor noise.",
     metadata: {
       filename: "DSC04892_SONY_A7IV.JPG",
@@ -186,8 +209,8 @@ export const SAMPLE_CASES = [
       md5_hash: "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d",
       format: "JPEG",
       mime_type: "image/jpeg",
-      dimensions: { width: 3840, height: 5760 },
-      aspect_ratio: "0.667 (2:3)",
+      dimensions: { width: 1024, height: 1024 },
+      aspect_ratio: "1.0 (1024:1024)",
       color_mode: "RGB",
       has_exif: true,
       camera_make: "Sony",
@@ -207,6 +230,17 @@ export const SAMPLE_CASES = [
       verdict_category: "Authentic / Unmodified Characteristics",
       confidence: "High",
       confidence_explanation: "Full hardware telemetry corroborated by natural optical aberrations and unbroken sensor noise structure.",
+      ai_assessment: {
+        is_ai_generated: "Authentic Human Photographic Capture",
+        ai_likelihood: "Low / Unlikely",
+        confidence_score: "94% optical correlation",
+        suspected_generator: "None (Authentic Sony ILCE-7M4 Sensor)",
+        key_signatures: [
+          "Intact Sony camera maker notes and lens telemetry",
+          "Physically coherent optical depth of field",
+          "Continuous Bayer sensor chrominance noise structure"
+        ]
+      },
       findings: [
         {
           id: "focal_sensor_noise",

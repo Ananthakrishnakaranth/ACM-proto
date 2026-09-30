@@ -41,6 +41,8 @@ def run_tests():
     print("[PASS] 3. Media Analysis Success:", media_res['success'])
     print("        Verdict Category:", media_res['report']['verdict_category'])
     print("        Confidence:", media_res['report']['confidence'])
+    print("        AI Likelihood:", media_res['report'].get('ai_assessment', {}).get('ai_likelihood'))
+    print("        Suspected Pipeline:", media_res['report'].get('ai_assessment', {}).get('suspected_generator'))
     print(f"        Findings Count: {len(media_res['report']['findings'])}")
 
     # 4. Liveness test with base64 frames

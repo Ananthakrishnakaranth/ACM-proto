@@ -19,7 +19,11 @@ import {
   RefreshCw,
   Sliders,
   CheckSquare,
-  Square
+  Square,
+  Bot,
+  Cpu,
+  Zap,
+  Fingerprint
 } from 'lucide-react';
 import ImageAnnotator from './ImageAnnotator';
 
@@ -389,6 +393,70 @@ export default function MediaVerifier({
                   </p>
                 )}
               </div>
+
+              {/* Dedicated AI Generation & Synthetic Media Assessment Card */}
+              {currentReport.ai_assessment && (
+                <div className="p-4 rounded-xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/40 border border-cyan-800/50 shadow-lg space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="p-1.5 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-800">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] uppercase tracking-wider font-mono text-cyan-400 font-bold block">
+                          AI Generation & Synthetic Model Analysis
+                        </span>
+                        <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+                          <span>{currentReport.ai_assessment.is_ai_generated || "AI Forensic Classification"}</span>
+                        </h4>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
+                        (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('high')
+                          ? 'bg-rose-950 text-rose-300 border-rose-800'
+                          : (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('moderate') || (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('medium')
+                          ? 'bg-amber-950 text-amber-300 border-amber-800'
+                          : 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                      }`}>
+                        AI Likelihood: {currentReport.ai_assessment.ai_likelihood}
+                      </span>
+                      {currentReport.ai_assessment.confidence_score && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-950 text-slate-300 border border-slate-800">
+                          {currentReport.ai_assessment.confidence_score}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {currentReport.ai_assessment.suspected_generator && (
+                    <div className="text-xs text-slate-300 flex items-center space-x-1.5 font-medium">
+                      <Cpu className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span><strong>Suspected Pipeline:</strong> {currentReport.ai_assessment.suspected_generator}</span>
+                    </div>
+                  )}
+
+                  {currentReport.ai_assessment.key_signatures?.length > 0 && (
+                    <div className="space-y-1.5 pt-1 border-t border-slate-800/60">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+                        Detected Generator & Synthesis Signatures:
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {currentReport.ai_assessment.key_signatures.map((sig, sIdx) => (
+                          <span
+                            key={sIdx}
+                            className="px-2 py-0.5 rounded-lg text-[11px] font-medium bg-slate-950 border border-slate-700/80 text-cyan-300 flex items-center space-x-1"
+                          >
+                            <Zap className="w-3 h-3 text-cyan-400" />
+                            <span>{sig}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Sub-Tabs: What We Found | EXIF Metadata | What To Check Next */}
               <div className="flex border-b border-slate-800 text-xs">

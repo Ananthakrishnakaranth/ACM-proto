@@ -9,7 +9,8 @@ import {
   CheckCircle2, 
   AlertCircle,
   Camera,
-  Layers
+  Layers,
+  Compass
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -18,6 +19,7 @@ export default function Navbar({
   onOpenApiKeyModal, 
   hasApiKey, 
   onOpenPhilosophyModal,
+  onOpenRoadmapModal,
   onSelectSampleCase,
   samples
 }) {
@@ -80,6 +82,14 @@ export default function Navbar({
             >
               <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
               <span>Evidence Philosophy</span>
+            </button>
+
+            <button
+              onClick={onOpenRoadmapModal}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-cyan-300 hover:bg-slate-800/40 transition-colors"
+            >
+              <Compass className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Future Roadmap</span>
             </button>
           </nav>
 
