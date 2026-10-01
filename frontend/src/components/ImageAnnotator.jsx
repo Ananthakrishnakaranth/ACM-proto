@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, ZoomIn, ZoomOut, Scan, AlertTriangle, Layers, Info } from 'lucide-react';
+import { Eye, ZoomIn, ZoomOut, AlertTriangle, Layers } from 'lucide-react';
 
 export default function ImageAnnotator({ 
   imageSrc, 
@@ -8,7 +8,6 @@ export default function ImageAnnotator({
   onSelectFinding 
 }) {
   const [showBoxes, setShowBoxes] = useState(true);
-  const [showScanline, setShowScanline] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
 
   // Filter findings that have 2D bounding boxes: [ymin, xmin, ymax, xmax] normalized 0-1000
@@ -18,40 +17,39 @@ export default function ImageAnnotator({
     switch (level?.toLowerCase()) {
       case 'high':
         return {
-          border: 'border-rose-500',
-          bg: 'bg-rose-500/15',
-          text: 'text-rose-400',
-          badge: 'bg-rose-950 text-rose-300 border-rose-800'
+          border: 'border-maroon-500',
+          bg: 'bg-maroon-500/15',
+          text: 'text-maroon-400',
+          badge: 'bg-maroon-950 text-maroon-300 border-maroon-800'
         };
       case 'medium':
         return {
-          border: 'border-amber-500',
-          bg: 'bg-amber-500/15',
-          text: 'text-amber-400',
-          badge: 'bg-amber-950 text-amber-300 border-amber-800'
+          border: 'border-gold-500',
+          bg: 'bg-gold-500/15',
+          text: 'text-gold-400',
+          badge: 'bg-gold-950 text-gold-300 border-gold-800'
         };
       default:
         return {
-          border: 'border-cyan-500',
-          bg: 'bg-cyan-500/15',
-          text: 'text-cyan-400',
-          badge: 'bg-cyan-950 text-cyan-300 border-cyan-800'
+          border: 'border-gold-500',
+          bg: 'bg-gold-500/15',
+          text: 'text-gold-400',
+          badge: 'bg-gold-950 text-gold-300 border-gold-800'
         };
     }
   };
 
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex flex-col">
+    <div className="relative w-full rounded-2xl overflow-hidden bg-sand-950 border border-sand-800 shadow-2xl flex flex-col">
       
       {/* Top HUD Controls */}
-      <div className="flex items-center justify-between px-3 py-2 bg-slate-900/90 border-b border-slate-800 text-xs">
+      <div className="flex items-center justify-between px-3 py-2 bg-sand-900/90 border-b border-sand-800 text-xs">
         <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="font-mono text-[11px] text-slate-300 uppercase tracking-wider">
+          <span className="font-mono text-[11px] text-sand-300 uppercase tracking-wider">
             Forensic Inspector HUD
           </span>
           {visualFindings.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gold-950 text-gold-400 border border-gold-800">
               {visualFindings.length} Focal Zones
             </span>
           )}
@@ -62,8 +60,8 @@ export default function ImageAnnotator({
             onClick={() => setShowBoxes(!showBoxes)}
             className={`px-2 py-1 rounded text-[11px] font-medium transition ${
               showBoxes 
-                ? 'bg-cyan-950 border border-cyan-700 text-cyan-300' 
-                : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                ? 'bg-gold-950 border border-gold-700 text-gold-300' 
+                : 'bg-sand-800 text-sand-400 hover:text-sand-200'
             }`}
             title="Toggle focal bounding boxes"
           >
@@ -72,21 +70,8 @@ export default function ImageAnnotator({
           </button>
 
           <button
-            onClick={() => setShowScanline(!showScanline)}
-            className={`px-2 py-1 rounded text-[11px] font-medium transition ${
-              showScanline 
-                ? 'bg-cyan-950 border border-cyan-700 text-cyan-300' 
-                : 'bg-slate-800 text-slate-400 hover:text-slate-200'
-            }`}
-            title="Toggle forensic scanning line"
-          >
-            <Scan className="w-3.5 h-3.5 inline mr-1" />
-            Scan
-          </button>
-
-          <button
             onClick={() => setZoomLevel(zoomLevel === 1 ? 1.5 : 1)}
-            className="p-1 rounded text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 transition"
+            className="p-1 rounded text-sand-400 hover:text-sand-200 bg-sand-800 hover:bg-sand-700 transition"
             title="Toggle Zoom"
           >
             {zoomLevel === 1 ? <ZoomIn className="w-3.5 h-3.5" /> : <ZoomOut className="w-3.5 h-3.5" />}
@@ -95,7 +80,7 @@ export default function ImageAnnotator({
       </div>
 
       {/* Image Stage */}
-      <div className="relative overflow-hidden flex items-center justify-center min-h-[320px] max-h-[520px] bg-slate-950 p-2 cyber-grid">
+      <div className="relative overflow-hidden flex items-center justify-center min-h-[320px] max-h-[520px] bg-sand-950 p-2">
         <div 
           className="relative max-w-full transition-transform duration-300"
           style={{ transform: `scale(${zoomLevel})` }}
@@ -104,13 +89,8 @@ export default function ImageAnnotator({
           <img
             src={imageSrc}
             alt="Forensic Inspection Subject"
-            className="max-h-[460px] w-auto object-contain rounded-lg border border-slate-800/80 block select-none"
+            className="max-h-[460px] w-auto object-contain rounded-lg border border-sand-800/80 block select-none"
           />
-
-          {/* Animated Scanning Beam */}
-          {showScanline && (
-            <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#22d3ee] pointer-events-none animate-scanline" />
-          )}
 
           {/* Interactive Bounding Boxes Overlay */}
           {showBoxes && visualFindings.map((finding) => {
@@ -151,22 +131,6 @@ export default function ImageAnnotator({
           })}
         </div>
 
-        {/* Reticle Guide Corners */}
-        <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-cyan-500/50 pointer-events-none" />
-        <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-cyan-500/50 pointer-events-none" />
-        <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-cyan-500/50 pointer-events-none" />
-        <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-cyan-500/50 pointer-events-none" />
-      </div>
-
-      {/* Footer Info Pill */}
-      <div className="px-3 py-1.5 bg-slate-900/90 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
-        <span className="flex items-center space-x-1">
-          <Info className="w-3 h-3 text-cyan-400" />
-          <span>Click any focal zone or list card to cross-inspect evidence.</span>
-        </span>
-        <span className="font-mono text-[10px] text-slate-500">
-          Scale: {Math.round(zoomLevel * 100)}%
-        </span>
       </div>
 
     </div>

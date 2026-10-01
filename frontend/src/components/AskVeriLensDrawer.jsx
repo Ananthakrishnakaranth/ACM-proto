@@ -88,42 +88,42 @@ export default function AskVeriLensDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-lg h-full bg-[#0D131F] border-l border-slate-800 shadow-2xl flex flex-col text-slate-100">
+    <div className="fixed inset-0 z-50 flex justify-end bg-sand-50/30 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-lg h-full bg-sand-900 border-l border-sand-800 shadow-2xl flex flex-col text-sand-100">
         
         {/* Header */}
-        <div className="p-4 border-b border-slate-800/90 flex items-center justify-between bg-slate-900/90">
+        <div className="p-4 border-b border-sand-800/90 flex items-center justify-between bg-sand-900/90">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 bg-gradient-to-tr from-cyan-600 to-sky-500 rounded-xl text-white shadow-md shadow-cyan-900/30">
+            <div className="p-2 bg-gradient-to-tr from-navy-600 to-navy-500 rounded-xl text-white shadow-md shadow-gold-900/30">
               <Bot className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <h3 className="font-bold text-sm text-white">Ask VeriLens</h3>
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-300 border border-cyan-800">
+                <h3 className="font-bold text-sm text-sand-50">Ask VeriLens</h3>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gold-950 text-gold-300 border border-gold-800">
                   Gemini Reasoning
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">Contextual Trust Report Q&A</p>
+              <p className="text-[11px] text-sand-400">Contextual Trust Report Q&A</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition"
+            className="p-1.5 text-sand-400 hover:text-sand-100 hover:bg-sand-800 rounded-lg transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Quick Suggestion Chips */}
-        <div className="p-3 bg-slate-950/60 border-b border-slate-800/60 flex items-center space-x-2 overflow-x-auto no-scrollbar">
-          <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+        <div className="p-3 bg-sand-950/60 border-b border-sand-800/60 flex items-center space-x-2 overflow-x-auto no-scrollbar">
+          <Lightbulb className="w-3.5 h-3.5 text-gold-400 shrink-0" />
           {quickQuestions.map((q, idx) => (
             <button
               key={idx}
               onClick={() => handleSendMessage(q)}
-              className="text-[11px] font-medium text-slate-300 bg-slate-800/80 hover:bg-cyan-950 hover:text-cyan-300 border border-slate-700/60 rounded-full px-2.5 py-1 whitespace-nowrap transition shrink-0"
+              className="text-[11px] font-medium text-sand-300 bg-sand-800/80 hover:bg-gold-950 hover:text-gold-300 border border-sand-700/60 rounded-full px-2.5 py-1 whitespace-nowrap transition shrink-0"
             >
               {q}
             </button>
@@ -142,8 +142,8 @@ export default function AskVeriLensDrawer({
               <div
                 className={`p-1.5 rounded-lg shrink-0 mt-0.5 ${
                   msg.role === 'user'
-                    ? 'bg-cyan-600 text-white'
-                    : 'bg-slate-800 text-cyan-400 border border-slate-700'
+                    ? 'bg-navy-600 text-white'
+                    : 'bg-sand-800 text-gold-400 border border-sand-700'
                 }`}
               >
                 {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
@@ -152,8 +152,8 @@ export default function AskVeriLensDrawer({
               <div
                 className={`max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-cyan-700/90 text-white rounded-tr-none'
-                    : 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none shadow-sm'
+                    ? 'bg-navy-600 text-white rounded-tr-none'
+                    : 'bg-sand-900 border border-sand-800 text-sand-200 rounded-tl-none shadow-sm'
                 }`}
               >
                 <div className="whitespace-pre-line prose-invert prose-xs">
@@ -164,7 +164,7 @@ export default function AskVeriLensDrawer({
           ))}
 
           {loading && (
-            <div className="flex items-center space-x-2 text-cyan-400 text-xs p-2">
+            <div className="flex items-center space-x-2 text-gold-400 text-xs p-2">
               <Sparkles className="w-4 h-4 animate-spin" />
               <span>Gemini is synthesizing forensic evidence...</span>
             </div>
@@ -177,19 +177,19 @@ export default function AskVeriLensDrawer({
             e.preventDefault();
             handleSendMessage();
           }}
-          className="p-3 border-t border-slate-800 bg-slate-900/90 flex items-center space-x-2"
+          className="p-3 border-t border-sand-800 bg-sand-900/90 flex items-center space-x-2"
         >
           <input
             type="text"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Ask about lighting, EXIF, or next verification steps..."
-            className="flex-1 px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition"
+            className="flex-1 px-3.5 py-2.5 bg-sand-950 border border-sand-700 rounded-xl text-xs text-sand-100 placeholder-sand-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition"
           />
           <button
             type="submit"
             disabled={!inputVal.trim() || loading}
-            className="p-2.5 bg-gradient-to-r from-cyan-600 to-sky-600 hover:from-cyan-500 hover:to-sky-500 text-white rounded-xl disabled:opacity-40 transition shadow-md shadow-cyan-900/30"
+            className="p-2.5 bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 text-white rounded-xl disabled:opacity-40 transition shadow-md shadow-gold-900/30"
           >
             <Send className="w-4 h-4" />
           </button>
