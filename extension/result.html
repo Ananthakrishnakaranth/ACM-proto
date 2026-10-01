@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>VeriLens Check</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><span class="logo">Veri<b>Lens</b></span><span class="tag">Don't just ask if it's real. See why.</span></header>
+  <main>
+    <img id="preview" alt="Image being checked">
+    <div id="status" class="status">Analysing image... this usually takes 15-20 seconds.</div>
+    <section id="result" hidden>
+      <div class="row">
+        <span id="verdict" class="badge"></span>
+        <span id="confidence" class="chip"></span>
+      </div>
+      <div class="stats">
+        <div><span class="label">AI probability</span><strong id="aiProb"></strong></div>
+        <div><span class="label">Editing</span><strong id="editVerdict"></strong></div>
+      </div>
+      <p id="summary" class="summary"></p>
+      <p id="notice" class="notice" hidden></p>
+      <h3>Key findings</h3>
+      <ul id="findings"></ul>
+      <a id="openApp" class="button" target="_blank">Open VeriLens for the full report</a>
+    </section>
+  </main>
+  <script src="result.js"></script>
+</body>
+</html>

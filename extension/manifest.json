@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "VeriLens - AI & Edit Checker",
+  "version": "1.0.0",
+  "description": "Right-click any image to check if it is AI-generated or edited. Don't just ask if it's real. See why.",
+  "permissions": ["contextMenus", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "VeriLens" }
+}
