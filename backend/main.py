@@ -1,8 +1,11 @@
 import os
 import base64
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 from exif_service import extract_image_metadata
@@ -13,6 +16,12 @@ from gemini_service import (
     get_api_key
 )
 from sample_data import SAMPLE_CASES, SAMPLE_LIVENESS_REPORT
+import ai_detector_service
+from report_service import build_pdf_report, report_filename
+from edit_service import analyze_edits, combine_edit_analysis
+
+# Runs the local AI detector alongside the Gemini request
+detector_pool = ThreadPoolExecutor(max_workers=4)
 
 app = FastAPI(
     title="VeriLens API",
@@ -29,9 +38,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+def preload_ai_detector():
+    ai_detector_service.preload_in_background()
+
 class LivenessRequest(BaseModel):
     frames: Dict[str, str]  # base64 data URLs: {"front": "...", "left": "...", "right": "...", "occlusion": "..."}
     api_key: Optional[str] = None
+
+class ReportRequest(BaseModel):
+    report: Dict[str, Any]
+    image_data_url: Optional[str] = None  # base64 data URL of the analyzed image, drawn with finding boxes
 
 class ChatRequest(BaseModel):
     report_context: Dict[str, Any]
@@ -51,6 +68,7 @@ def health_check():
         "status": "healthy",
         "service": "VeriLens AI Verification",
         "gemini_configured": has_key,
+        "ai_detector": ai_detector_service.status(),
         "philosophy": "Don't just ask if it's real. See why."
     }
 
@@ -77,13 +95,25 @@ async def analyze_media(
         # 1. Deep EXIF and header extraction
         metadata = extract_image_metadata(content, filename=file.filename or "upload.jpg")
 
-        # 2. Multimodal Gemini reasoning
-        report = analyze_media_with_gemini(
+        # 2. Local neural AI detector + edit forensics (in parallel) + multimodal Gemini reasoning
+        detector_future = detector_pool.submit(ai_detector_service.detect, content)
+        edit_future = detector_pool.submit(analyze_edits, content, metadata)
+        report = await asyncio.to_thread(
+            analyze_media_with_gemini,
             image_bytes=content,
             mime_type=file.content_type or metadata.get("mime_type", "image/jpeg"),
             metadata_summary=metadata,
-            api_key=custom_key
+            api_key=custom_key,
+            detector_future=detector_future
         )
+
+        # 3. Was the photo edited? (metadata + ELA + Gemini's visual edit assessment)
+        try:
+            local_edits = edit_future.result(timeout=30)
+        except Exception as e:
+            print(f"Edit analysis failed: {e}")
+            local_edits = None
+        combine_edit_analysis(report, local_edits, metadata)
 
         return {
             "success": True,
@@ -93,6 +123,18 @@ async def analyze_media(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+@app.post("/api/report/pdf")
+async def report_pdf(payload: ReportRequest):
+    try:
+        pdf = await asyncio.to_thread(build_pdf_report, payload.report, payload.image_data_url)
+        return Response(
+            content=pdf,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{report_filename(payload.report)}"'}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Report generation failed: {str(e)}")
 
 @app.post("/api/analyze-liveness")
 async def analyze_liveness(payload: LivenessRequest):
