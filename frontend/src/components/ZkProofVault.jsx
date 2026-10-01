@@ -503,7 +503,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
                 </p>
               </div>
             </div>
-            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-olive-950 text-olive-300 border border-olive-800 uppercase">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-olive-600 text-white border border-olive-600 uppercase">
               {publicSignals.challenge_method === 'device_authenticator' ? '📱 Device Auth' : '📷 Webcam ZKP'}
             </span>
           </div>

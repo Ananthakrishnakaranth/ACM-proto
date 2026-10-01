@@ -20,21 +20,21 @@ export default function ImageAnnotator({
           border: 'border-maroon-500',
           bg: 'bg-maroon-500/15',
           text: 'text-maroon-400',
-          badge: 'bg-maroon-950 text-maroon-300 border-maroon-800'
+          badge: 'bg-maroon-600 text-white border-maroon-600'
         };
       case 'medium':
         return {
           border: 'border-gold-500',
           bg: 'bg-gold-500/15',
           text: 'text-gold-400',
-          badge: 'bg-gold-950 text-gold-300 border-gold-800'
+          badge: 'bg-gold-500 text-navy-600 border-gold-500'
         };
       default:
         return {
-          border: 'border-gold-500',
-          bg: 'bg-gold-500/15',
-          text: 'text-gold-400',
-          badge: 'bg-gold-950 text-gold-300 border-gold-800'
+          border: 'border-olive-500',
+          bg: 'bg-olive-500/15',
+          text: 'text-olive-400',
+          badge: 'bg-olive-600 text-white border-olive-600'
         };
     }
   };

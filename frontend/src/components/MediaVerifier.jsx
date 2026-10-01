@@ -164,27 +164,27 @@ export default function MediaVerifier({
     const cat = (category || '').toLowerCase();
     if (cat.includes('synthetic') || cat.includes('generated')) {
       return {
-        bg: 'bg-maroon-950/80',
-        text: 'text-maroon-300',
-        border: 'border-maroon-800',
+        bg: 'bg-maroon-600',
+        text: 'text-white',
+        border: 'border-maroon-600',
         icon: ShieldAlert,
         glow: 'glow-rose'
       };
     }
     if (cat.includes('manipulation') || cat.includes('inpainting')) {
       return {
-        bg: 'bg-gold-950/80',
-        text: 'text-gold-300',
-        border: 'border-gold-800',
+        bg: 'bg-gold-500',
+        text: 'text-navy-600',
+        border: 'border-gold-500',
         icon: AlertTriangle,
         glow: 'glow-amber'
       };
     }
     if (cat.includes('authentic') || cat.includes('unmodified')) {
       return {
-        bg: 'bg-olive-950/80',
-        text: 'text-olive-300',
-        border: 'border-olive-800',
+        bg: 'bg-olive-600',
+        text: 'text-white',
+        border: 'border-olive-600',
         icon: ShieldCheck,
         glow: 'glow-emerald'
       };
@@ -396,10 +396,10 @@ export default function MediaVerifier({
                     <div className="flex items-center space-x-2">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
                         (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('high')
-                          ? 'bg-maroon-950 text-maroon-300 border-maroon-800'
+                          ? 'bg-maroon-600 text-white border-maroon-600'
                           : (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('moderate') || (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('medium')
-                          ? 'bg-gold-950 text-gold-300 border-gold-800'
-                          : 'bg-olive-950 text-olive-300 border-olive-800'
+                          ? 'bg-gold-500 text-navy-600 border-gold-500'
+                          : 'bg-olive-600 text-white border-olive-600'
                       }`}>
                         AI Likelihood: {currentReport.ai_assessment.ai_likelihood}
                       </span>
@@ -503,10 +503,10 @@ export default function MediaVerifier({
 
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                             isHigh
-                              ? 'bg-maroon-950 text-maroon-300 border border-maroon-800'
+                              ? 'bg-maroon-600 text-white border border-maroon-600'
                               : isMed
-                              ? 'bg-gold-950 text-gold-300 border border-gold-800'
-                              : 'bg-sand-900 text-sand-300 border border-sand-800'
+                              ? 'bg-gold-500 text-navy-600 border border-gold-500'
+                              : 'bg-olive-600 text-white border border-olive-600'
                           }`}>
                             {f.suspicion_level} Suspicion
                           </span>

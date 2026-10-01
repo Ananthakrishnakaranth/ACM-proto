@@ -421,8 +421,8 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                   <div className="flex items-center space-x-2">
                     <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${
                       report.status_category === 'pass'
-                        ? 'bg-olive-950/80 text-olive-300 border-olive-800 glow-emerald'
-                        : 'bg-maroon-950/80 text-maroon-300 border-maroon-800 glow-rose'
+                        ? 'bg-olive-600 text-white border-olive-600 glow-emerald'
+                        : 'bg-maroon-600 text-white border-maroon-600 glow-rose'
                     }`}>
                       {report.status_category === 'pass' ? <ShieldCheck className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
                       <span>{report.liveness_status}</span>
@@ -482,8 +482,8 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                       <span className="font-bold text-sand-50">{item.title}</span>
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                         item.status === 'pass'
-                          ? 'bg-olive-950 text-olive-300 border border-olive-800'
-                          : 'bg-maroon-950 text-maroon-300 border border-maroon-800'
+                          ? 'bg-olive-600 text-white border border-olive-600'
+                          : 'bg-maroon-600 text-white border border-maroon-600'
                       }`}>
                         {item.status}
                       </span>
