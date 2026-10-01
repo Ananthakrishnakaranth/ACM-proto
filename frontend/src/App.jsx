@@ -6,11 +6,12 @@ import ApiKeyModal from './components/ApiKeyModal';
 import PhilosophyModal from './components/PhilosophyModal';
 import RoadmapModal from './components/RoadmapModal';
 import AskVeriLensDrawer from './components/AskVeriLensDrawer';
+import ZkProofVault from './components/ZkProofVault';
 import { SAMPLE_CASES } from './data/sampleCases';
-import { ShieldCheck, Scan, Eye, Heart, Layers, Camera, HelpCircle, Sparkles } from 'lucide-react';
+import { ShieldCheck, Scan, Eye, Heart, Layers, Camera, HelpCircle, Sparkles, Shield } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('media'); // 'media' | 'liveness'
+  const [activeTab, setActiveTab] = useState('media'); // 'media' | 'liveness' | 'zk'
   const [apiKey, setApiKey] = useState('');
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isPhilosophyModalOpen, setIsPhilosophyModalOpen] = useState(false);
@@ -115,6 +116,28 @@ export default function App() {
             apiKey={apiKey}
             onOpenChat={() => setIsChatDrawerOpen(true)}
           />
+        )}
+
+        {activeTab === 'zk' && (
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-6 p-4 rounded-2xl glass-panel border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-extrabold text-white flex items-center space-x-2">
+                  <Shield className="w-5 h-5 text-violet-400" />
+                  <span>Zero-Knowledge Privacy Studio</span>
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Generate cryptographic proofs that protect your identity. Prove you're real without revealing who you are.
+                </p>
+              </div>
+            </div>
+            <ZkProofVault
+              livenessReport={currentMediaReport}
+              capturedFrames={{}}
+              mediaReport={currentMediaReport}
+              imageHash={currentMediaReport?.metadata?.md5_hash || ''}
+            />
+          </div>
         )}
 
       </main>

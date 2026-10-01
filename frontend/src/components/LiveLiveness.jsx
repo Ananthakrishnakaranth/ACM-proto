@@ -19,6 +19,7 @@ import {
   Scan
 } from 'lucide-react';
 import { SAMPLE_LIVENESS_REPORT } from '../data/sampleCases';
+import ZkProofVault from './ZkProofVault';
 
 const CHALLENGE_STEPS = [
   {
@@ -518,6 +519,12 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                   <strong>Liveness Signal Notice:</strong> {report.disclaimer || "This is a real-time liveness signal indicator, not an absolute guarantee of identity or authenticity."}
                 </p>
               </div>
+
+              {/* ── Zero-Knowledge Privacy Vault ── */}
+              <ZkProofVault
+                livenessReport={report}
+                capturedFrames={capturedFrames}
+              />
 
             </div>
           ) : (

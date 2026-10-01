@@ -10,7 +10,8 @@ import {
   AlertCircle,
   Camera,
   Layers,
-  Compass
+  Compass,
+  Shield
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -74,6 +75,18 @@ export default function Navbar({
             >
               <Camera className="w-3.5 h-3.5" />
               <span>Live Identity Check</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('zk')}
+              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                activeTab === 'zk'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-900/40'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+              }`}
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>ZK Privacy</span>
             </button>
 
             <button
@@ -163,6 +176,14 @@ export default function Navbar({
               }`}
             >
               Live Check
+            </button>
+            <button
+              onClick={() => setActiveTab('zk')}
+              className={`px-3 py-1 rounded text-xs font-semibold ${
+                activeTab === 'zk' ? 'bg-violet-600 text-white' : 'text-slate-400'
+              }`}
+            >
+              ZK Privacy
             </button>
           </div>
           <button
