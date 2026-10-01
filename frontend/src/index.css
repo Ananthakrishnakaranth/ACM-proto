@@ -1,72 +1,55 @@
 @import "tailwindcss";
 
 /*
-  VeriLens palette — Navy #1F2A44 · Warm Beige #E8DCC8 · Soft Gold #C6A75E
-  · Maroon #560A0B · Dark Olive #333818.
+  VeriLens palette — Burgundy #6B1D2A · Olive Green #4B5320 (neutrals are olive-tinted greys).
+  Burgundy: primary actions, active tabs, suspicious / synthetic signals.
+  Olive: accents, highlights, authentic / verified signals.
   The scales are tuned for a light UI: 950/900 are the softest surface tints,
   800/700 are borders, 600/500 are solid fills (buttons, dots), and 400 → 50
   are progressively darker text tones.
 */
 @theme {
-  --color-cream: #E8DCC8;
+  /* Page background — pale olive wash (no beige) */
+  --color-cream: #E9EDDF;
 
-  /* Neutrals — navy-tinted text on warm beige surfaces */
-  --color-sand-50: #141C30;
-  --color-sand-100: #1A2339;
-  --color-sand-200: #1F2A44;
-  --color-sand-300: #3A4560;
-  --color-sand-400: #5A6278;
-  --color-sand-500: #737A8C;
-  --color-sand-600: #9A9FAC;
-  --color-sand-700: #D9CDB8;
-  --color-sand-800: #E8DFCF;
+  /* Neutrals — olive-tinted greys for surfaces, borders and text */
+  --color-sand-50: #1B1E11;
+  --color-sand-100: #242818;
+  --color-sand-200: #2E3322;
+  --color-sand-300: #434A33;
+  --color-sand-400: #5A6247;
+  --color-sand-500: #737C5E;
+  --color-sand-600: #9AA386;
+  --color-sand-700: #CDD5BB;
+  --color-sand-800: #E3E8D6;
   --color-sand-900: #FFFFFF;
-  --color-sand-950: #F7F2E9;
+  --color-sand-950: #F4F6EE;
 
-  /* Navy — primary buttons, active tabs */
-  --color-navy-400: #3B4A70;
-  --color-navy-500: #2C3A5C;
-  --color-navy-600: #1F2A44;
-  --color-navy-700: #18213A;
+  /* Burgundy — primary */
+  --color-burgundy-50: #2C080E;
+  --color-burgundy-100: #3B0C14;
+  --color-burgundy-200: #4A111B;
+  --color-burgundy-300: #5A1622;
+  --color-burgundy-400: #6B1D2A;
+  --color-burgundy-500: #8A2E3D;
+  --color-burgundy-600: #6B1D2A;
+  --color-burgundy-700: #C98E98;
+  --color-burgundy-800: #E2BCC2;
+  --color-burgundy-900: #F2DDE0;
+  --color-burgundy-950: #F9EEF0;
 
-  /* Soft gold — accents, highlights, tints */
-  --color-gold-50: #433412;
-  --color-gold-100: #523F16;
-  --color-gold-200: #654E1B;
-  --color-gold-300: #7A5F22;
-  --color-gold-400: #8A6D2B;
-  --color-gold-500: #C6A75E;
-  --color-gold-600: #B8984E;
-  --color-gold-700: #D9BF84;
-  --color-gold-800: #E8D7AE;
-  --color-gold-900: #F3E9D2;
-  --color-gold-950: #FAF5EA;
-
-  /* Maroon #560A0B — suspicious / likely synthetic */
-  --color-maroon-50: #3A0607;
-  --color-maroon-100: #470809;
-  --color-maroon-200: #560A0B;
-  --color-maroon-300: #5E0F10;
-  --color-maroon-400: #6B1314;
-  --color-maroon-500: #8A2A2A;
-  --color-maroon-600: #560A0B;
-  --color-maroon-700: #CF9695;
-  --color-maroon-800: #E3BDBC;
-  --color-maroon-900: #F1DCDB;
-  --color-maroon-950: #F8EDEC;
-
-  /* Dark olive #333818 — authentic / success */
-  --color-olive-50: #22250F;
-  --color-olive-100: #2A2E14;
-  --color-olive-200: #333818;
-  --color-olive-300: #383D1B;
-  --color-olive-400: #3F4520;
-  --color-olive-500: #5A632C;
-  --color-olive-600: #333818;
-  --color-olive-700: #B0B78A;
-  --color-olive-800: #CDD2B0;
-  --color-olive-900: #E4E7D3;
-  --color-olive-950: #F2F3EA;
+  /* Olive green — accent */
+  --color-olive-50: #1F230C;
+  --color-olive-100: #282D10;
+  --color-olive-200: #323814;
+  --color-olive-300: #4B5320;
+  --color-olive-400: #5B6B24;
+  --color-olive-500: #6B7A35;
+  --color-olive-600: #4B5320;
+  --color-olive-700: #B3BE86;
+  --color-olive-800: #D0D7B0;
+  --color-olive-900: #E6EAD3;
+  --color-olive-950: #F3F5EA;
 }
 
 @layer base {
@@ -97,35 +80,35 @@
 .glass-panel {
   background: #FFFFFF;
   border: 1px solid var(--color-sand-800);
-  box-shadow: 0 1px 2px rgba(31, 42, 68, 0.04), 0 10px 30px -18px rgba(31, 42, 68, 0.22);
+  box-shadow: 0 1px 2px rgba(27, 30, 17, 0.04), 0 10px 30px -18px rgba(27, 30, 17, 0.22);
 }
 
 .glass-panel-hover {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-panel-hover:hover {
-  border-color: var(--color-gold-500);
-  box-shadow: 0 14px 34px -16px rgba(31, 42, 68, 0.28);
+  border-color: var(--color-olive-500);
+  box-shadow: 0 14px 34px -16px rgba(107, 29, 42, 0.22);
 }
 
 .glow-cyan {
-  box-shadow: 0 8px 24px -10px rgba(198, 167, 94, 0.5);
+  box-shadow: 0 8px 24px -10px rgba(75, 83, 32, 0.4);
 }
 
 .glow-emerald {
-  box-shadow: 0 8px 24px -10px rgba(51, 56, 24, 0.4);
+  box-shadow: 0 8px 24px -10px rgba(75, 83, 32, 0.4);
 }
 
 .glow-amber {
-  box-shadow: 0 8px 24px -10px rgba(198, 167, 94, 0.5);
+  box-shadow: 0 8px 24px -10px rgba(75, 83, 32, 0.4);
 }
 
 .glow-rose {
-  box-shadow: 0 8px 24px -10px rgba(86, 10, 11, 0.4);
+  box-shadow: 0 8px 24px -10px rgba(107, 29, 42, 0.4);
 }
 
 .glow-violet {
-  box-shadow: 0 8px 24px -10px rgba(31, 42, 68, 0.35);
+  box-shadow: 0 8px 24px -10px rgba(107, 29, 42, 0.35);
 }
 
 @keyframes fadeIn {

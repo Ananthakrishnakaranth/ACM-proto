@@ -17,17 +17,17 @@ export default function ImageAnnotator({
     switch (level?.toLowerCase()) {
       case 'high':
         return {
-          border: 'border-maroon-500',
-          bg: 'bg-maroon-500/15',
-          text: 'text-maroon-400',
-          badge: 'bg-maroon-600 text-white border-maroon-600'
+          border: 'border-burgundy-500',
+          bg: 'bg-burgundy-500/15',
+          text: 'text-burgundy-400',
+          badge: 'bg-burgundy-600 text-white border-burgundy-600'
         };
       case 'medium':
         return {
-          border: 'border-gold-500',
-          bg: 'bg-gold-500/15',
-          text: 'text-gold-400',
-          badge: 'bg-gold-500 text-navy-600 border-gold-500'
+          border: 'border-burgundy-500',
+          bg: 'bg-burgundy-500/10',
+          text: 'text-burgundy-400',
+          badge: 'bg-burgundy-950 text-burgundy-400 border-burgundy-700'
         };
       default:
         return {
@@ -49,7 +49,7 @@ export default function ImageAnnotator({
             Forensic Inspector HUD
           </span>
           {visualFindings.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gold-950 text-gold-400 border border-gold-800">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-olive-950 text-olive-400 border border-olive-800">
               {visualFindings.length} Focal Zones
             </span>
           )}
@@ -60,7 +60,7 @@ export default function ImageAnnotator({
             onClick={() => setShowBoxes(!showBoxes)}
             className={`px-2 py-1 rounded text-[11px] font-medium transition ${
               showBoxes 
-                ? 'bg-gold-950 border border-gold-700 text-gold-300' 
+                ? 'bg-olive-950 border border-olive-700 text-olive-300' 
                 : 'bg-sand-800 text-sand-400 hover:text-sand-200'
             }`}
             title="Toggle focal bounding boxes"

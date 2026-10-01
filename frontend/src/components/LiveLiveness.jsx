@@ -184,14 +184,14 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
     // Create simulated challenge frames
     const simulated = {};
     CHALLENGE_STEPS.forEach((step, i) => {
-      ctx.fillStyle = '#E8DCC8';
+      ctx.fillStyle = '#E9EDDF';
       ctx.fillRect(0, 0, 320, 240);
-      ctx.fillStyle = '#1F2A44';
+      ctx.fillStyle = '#6B1D2A';
       ctx.font = '14px sans-serif';
       ctx.fillText(`SIMULATED FRAME: ${step.title}`, 20, 40);
       ctx.fillText(`Liveness Pose Stage ${i+1}/4`, 20, 70);
       if (step.id === 'occlusion') {
-        ctx.fillStyle = '#560A0B';
+        ctx.fillStyle = '#6B1D2A';
         ctx.fillRect(80, 80, 160, 100);
         ctx.fillStyle = '#ffffff';
         ctx.fillText('HAND OCCLUSION REGION', 90, 130);
@@ -213,7 +213,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
       <div className="p-4 rounded-2xl glass-panel border border-sand-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-sand-50 flex items-center space-x-2">
-            <Camera className="w-5 h-5 text-gold-400" />
+            <Camera className="w-5 h-5 text-olive-400" />
             <span>Live Identity Check</span>
           </h2>
           <p className="text-xs text-sand-400 mt-0.5">
@@ -225,7 +225,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
           {!streamActive && (
             <button
               onClick={startCamera}
-              className="text-xs px-3 py-1.5 rounded-xl bg-navy-600 hover:bg-navy-500 text-white font-semibold flex items-center space-x-1.5 transition"
+              className="text-xs px-3 py-1.5 rounded-xl bg-burgundy-600 hover:bg-burgundy-500 text-white font-semibold flex items-center space-x-1.5 transition"
             >
               <Camera className="w-3.5 h-3.5" />
               <span>Connect Camera</span>
@@ -236,7 +236,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
             onClick={runSimulatedDemo}
             className="text-xs px-3 py-1.5 rounded-xl bg-sand-900 hover:bg-sand-800 text-sand-300 border border-sand-700 font-semibold flex items-center space-x-1.5 transition"
           >
-            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+            <Sparkles className="w-3.5 h-3.5 text-olive-400" />
             <span>Demo Occlusion Test</span>
           </button>
         </div>
@@ -253,12 +253,12 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
             {/* Top Video Header */}
             <div className="w-full flex items-center justify-between px-3 py-2 bg-sand-900/90 border-b border-sand-800 text-xs z-20">
               <div className="flex items-center space-x-2">
-                <span className={`w-2 h-2 rounded-full ${streamActive ? 'bg-olive-400 animate-pulse' : 'bg-maroon-400'}`} />
+                <span className={`w-2 h-2 rounded-full ${streamActive ? 'bg-olive-400 animate-pulse' : 'bg-burgundy-400'}`} />
                 <span className="font-mono text-[11px] text-sand-300 uppercase tracking-wider">
                   {streamActive ? 'Webcam Stream Active' : 'Camera Idle'}
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-gold-400 bg-gold-950 px-2 py-0.5 rounded border border-gold-800">
+              <span className="text-[10px] font-mono text-olive-400 bg-olive-950 px-2 py-0.5 rounded border border-olive-800">
                 Liveness Signal Mode
               </span>
             </div>
@@ -281,7 +281,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                   </p>
                   <button
                     onClick={runSimulatedDemo}
-                    className="px-3.5 py-1.5 rounded-xl bg-navy-600 hover:bg-navy-500 text-white text-xs font-semibold"
+                    className="px-3.5 py-1.5 rounded-xl bg-burgundy-600 hover:bg-burgundy-500 text-white text-xs font-semibold"
                   >
                     Run Demo Challenge With Sample Frames
                   </button>
@@ -294,28 +294,28 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                   {/* Oval face guide */}
                   <div className={`w-48 h-64 rounded-[50%] border-2 transition-all duration-300 ${
                     isChallengeActive 
-                      ? 'border-gold-400 shadow-[0_8px_20px_rgba(198,167,94,0.45)] scale-105' 
+                      ? 'border-olive-400 shadow-[0_8px_20px_rgba(198,167,94,0.45)] scale-105' 
                       : 'border-sand-500/40 border-dashed'
                   }`}>
                     {/* Horizontal eye alignment guide */}
-                    <div className="w-full h-0.5 bg-gold-400/30 mt-20" />
+                    <div className="w-full h-0.5 bg-olive-400/30 mt-20" />
                     {/* Vertical nose alignment guide */}
-                    <div className="w-0.5 h-full bg-gold-400/30 mx-auto -mt-20" />
+                    <div className="w-0.5 h-full bg-olive-400/30 mx-auto -mt-20" />
                   </div>
 
                   {/* Corner Reticle Accents */}
-                  <div className="absolute top-6 left-6 w-5 h-5 border-t-2 border-l-2 border-gold-400" />
-                  <div className="absolute top-6 right-6 w-5 h-5 border-t-2 border-r-2 border-gold-400" />
-                  <div className="absolute bottom-6 left-6 w-5 h-5 border-b-2 border-l-2 border-gold-400" />
-                  <div className="absolute bottom-6 right-6 w-5 h-5 border-b-2 border-r-2 border-gold-400" />
+                  <div className="absolute top-6 left-6 w-5 h-5 border-t-2 border-l-2 border-olive-400" />
+                  <div className="absolute top-6 right-6 w-5 h-5 border-t-2 border-r-2 border-olive-400" />
+                  <div className="absolute bottom-6 left-6 w-5 h-5 border-b-2 border-l-2 border-olive-400" />
+                  <div className="absolute bottom-6 right-6 w-5 h-5 border-b-2 border-r-2 border-olive-400" />
                 </div>
               )}
 
               {/* Active Step Prompt Overlay */}
               {isChallengeActive && (
-                <div className="absolute bottom-4 inset-x-4 p-3 rounded-xl bg-sand-900/90 backdrop-blur-md border border-gold-500/60 text-center shadow-xl animate-fade-in z-20">
-                  <div className="flex items-center justify-center space-x-2 text-gold-400 font-bold text-xs uppercase tracking-wider mb-1">
-                    {currentStep.id === 'occlusion' ? <Hand className="w-4 h-4 animate-bounce text-maroon-400" /> : <Scan className="w-4 h-4" />}
+                <div className="absolute bottom-4 inset-x-4 p-3 rounded-xl bg-sand-900/90 backdrop-blur-md border border-olive-500/60 text-center shadow-xl animate-fade-in z-20">
+                  <div className="flex items-center justify-center space-x-2 text-olive-400 font-bold text-xs uppercase tracking-wider mb-1">
+                    {currentStep.id === 'occlusion' ? <Hand className="w-4 h-4 animate-bounce text-burgundy-400" /> : <Scan className="w-4 h-4" />}
                     <span>Step {currentStep.stepNumber} of 4: {currentStep.title}</span>
                   </div>
                   <p className="text-sm font-semibold text-sand-50">
@@ -334,7 +334,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                 <button
                   onClick={startChallenge}
                   disabled={!streamActive}
-                  className="w-full py-2.5 px-4 bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 text-white font-bold rounded-xl shadow-lg shadow-gold-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-burgundy-600 to-burgundy-600 hover:from-burgundy-500 hover:to-burgundy-500 text-white font-bold rounded-xl shadow-lg shadow-olive-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
                 >
                   <Play className="w-4 h-4 fill-white" />
                   <span>Start 4-Step Liveness Challenge</span>
@@ -350,7 +350,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
 
                   <button
                     onClick={handleNextStep}
-                    className="flex-1 py-2 px-4 bg-navy-600 hover:bg-navy-500 text-white font-bold rounded-xl shadow-md flex items-center justify-center space-x-1.5 transition"
+                    className="flex-1 py-2 px-4 bg-burgundy-600 hover:bg-burgundy-500 text-white font-bold rounded-xl shadow-md flex items-center justify-center space-x-1.5 transition"
                   >
                     <span>Capture Step {currentStep.stepNumber} & Continue</span>
                     <ArrowRight className="w-4 h-4" />
@@ -373,7 +373,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                   <div
                     key={step.id}
                     className={`relative rounded-xl overflow-hidden border p-1 text-center bg-sand-900 flex flex-col items-center justify-center min-h-[75px] ${
-                      frame ? 'border-gold-500/80' : 'border-sand-800'
+                      frame ? 'border-olive-500/80' : 'border-sand-800'
                     }`}
                   >
                     {frame ? (
@@ -402,10 +402,10 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
         <div className="lg:col-span-6 space-y-4">
           
           {analyzing ? (
-            <div className="min-h-[460px] rounded-2xl glass-panel border border-gold-800/40 p-8 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="min-h-[460px] rounded-2xl glass-panel border border-olive-800/40 p-8 flex flex-col items-center justify-center text-center space-y-4">
               <div className="relative w-16 h-16">
-                <div className="absolute inset-0 rounded-full border-4 border-gold-500/20 border-t-gold-400 animate-spin" />
-                <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-gold-300 animate-pulse" />
+                <div className="absolute inset-0 rounded-full border-4 border-olive-500/20 border-t-olive-400 animate-spin" />
+                <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-olive-300 animate-pulse" />
               </div>
               <h3 className="text-base font-bold text-sand-50">Analyzing Occlusion & 3D Parallax</h3>
               <p className="text-xs text-sand-400 max-w-xs leading-relaxed">
@@ -422,7 +422,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                     <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${
                       report.status_category === 'pass'
                         ? 'bg-olive-600 text-white border-olive-600 glow-emerald'
-                        : 'bg-maroon-600 text-white border-maroon-600 glow-rose'
+                        : 'bg-burgundy-600 text-white border-burgundy-600 glow-rose'
                     }`}>
                       {report.status_category === 'pass' ? <ShieldCheck className="w-4 h-4" /> : <ShieldAlert className="w-4 h-4" />}
                       <span>{report.liveness_status}</span>
@@ -435,7 +435,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
 
                   <button
                     onClick={onOpenChat}
-                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-navy-600 hover:bg-navy-500 text-white shadow-md transition"
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-burgundy-600 hover:bg-burgundy-500 text-white shadow-md transition"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
                     <span>Ask VeriLens</span>
@@ -448,9 +448,9 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
               </div>
 
               {/* Hand Occlusion Deep-Dive */}
-              <div className="p-4 rounded-xl bg-gradient-to-br from-gold-950/40 to-sand-950 border border-gold-800/40 space-y-2">
-                <div className="flex items-center space-x-2 text-gold-300 text-xs font-bold uppercase tracking-wider">
-                  <Hand className="w-4 h-4 text-gold-400" />
+              <div className="p-4 rounded-xl bg-gradient-to-br from-olive-950/40 to-sand-950 border border-olive-800/40 space-y-2">
+                <div className="flex items-center space-x-2 text-olive-300 text-xs font-bold uppercase tracking-wider">
+                  <Hand className="w-4 h-4 text-olive-400" />
                   <span>Occlusion Moment Analysis (Hand Over Face)</span>
                 </div>
                 <p className="text-xs text-sand-200 leading-relaxed">
@@ -483,7 +483,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                         item.status === 'pass'
                           ? 'bg-olive-600 text-white border border-olive-600'
-                          : 'bg-maroon-600 text-white border border-maroon-600'
+                          : 'bg-burgundy-600 text-white border border-burgundy-600'
                       }`}>
                         {item.status}
                       </span>
@@ -491,7 +491,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
                     <p className="text-sand-300 text-[11px]">
                       <strong className="text-sand-400">Observed:</strong> {item.observation}
                     </p>
-                    <div className="p-2 rounded bg-gold-950/30 border border-gold-900/40 text-[11px] text-gold-300">
+                    <div className="p-2 rounded bg-olive-950/30 border border-olive-900/40 text-[11px] text-olive-300">
                       <strong>Why It Matters:</strong> {item.why_it_matters}
                     </div>
                   </div>
@@ -514,7 +514,7 @@ export default function LiveLiveness({ apiKey, onOpenChat }) {
 
               {/* Explicit Liveness Disclaimer */}
               <div className="p-3 rounded-xl bg-sand-950/70 border border-sand-800 text-[11px] text-sand-400 flex items-center space-x-2">
-                <Info className="w-4 h-4 text-gold-400 shrink-0" />
+                <Info className="w-4 h-4 text-olive-400 shrink-0" />
                 <p>
                   <strong>Liveness Signal Notice:</strong> {report.disclaimer || "This is a real-time liveness signal indicator, not an absolute guarantee of identity or authenticity."}
                 </p>

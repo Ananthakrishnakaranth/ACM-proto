@@ -48,7 +48,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream text-sand-100 relative selection:bg-gold-500/30 selection:text-gold-200">
+    <div className="min-h-screen flex flex-col bg-cream text-sand-100 relative selection:bg-olive-500/30 selection:text-olive-200">
       
       {/* Top Navbar */}
       <Navbar
@@ -86,7 +86,7 @@ export default function App() {
             <div className="mb-6 p-4 rounded-2xl glass-panel border border-sand-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-semibold text-sand-50 flex items-center space-x-2">
-                  <Shield className="w-5 h-5 text-gold-400" />
+                  <Shield className="w-5 h-5 text-olive-400" />
                   <span>Zero-Knowledge Privacy Studio</span>
                 </h2>
                 <p className="text-xs text-sand-400 mt-0.5">
@@ -114,26 +114,26 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-sand-800/80 bg-sand-950/80 py-6 text-xs text-sand-500">
+      <footer className="w-full bg-olive-600 py-6 text-xs text-white/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-sand-400">VeriLens</span>
+            <span className="font-bold text-white">VeriLens</span>
             <span>•</span>
             <span>Track: “Trust in a Synthetic World”</span>
             <span>•</span>
-            <span className="text-gold-400 font-mono">Gemini Multimodal Reasoning</span>
+            <span className="text-olive-800 font-mono">Gemini Multimodal Reasoning</span>
           </div>
 
-          <div className="flex items-center space-x-4 text-sand-400">
+          <div className="flex items-center space-x-4 text-white/80">
             <button
               onClick={openPhilosophy}
-              className="hover:text-gold-300 transition"
+              className="hover:text-white transition"
             >
               Core Philosophy
             </button>
             <button
               onClick={() => setIsApiKeyModalOpen(true)}
-              className="hover:text-gold-300 transition"
+              className="hover:text-white transition"
             >
               API Key Config
             </button>
@@ -141,7 +141,7 @@ export default function App() {
               href="https://aistudio.google.com"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-gold-300 transition"
+              className="hover:text-white transition"
             >
               Google AI Studio
             </a>

@@ -110,7 +110,7 @@ function DeviceAuthenticator({ onProofGenerated }) {
         <button
           onClick={requestChallenge}
           disabled={loading}
-          className="w-full py-3 px-4 bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 text-white font-bold rounded-xl shadow-lg shadow-gold-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
+          className="w-full py-3 px-4 bg-gradient-to-r from-burgundy-600 to-burgundy-600 hover:from-burgundy-500 hover:to-burgundy-500 text-white font-bold rounded-xl shadow-lg shadow-olive-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
         >
           {loading ? (
             <RefreshCw className="w-4 h-4 animate-spin" />
@@ -122,8 +122,8 @@ function DeviceAuthenticator({ onProofGenerated }) {
       ) : (
         <div className="space-y-4">
           {/* Challenge Number Display */}
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-gold-950/60 to-gold-950/40 border border-gold-700/50 text-center">
-            <p className="text-[11px] uppercase tracking-wider font-bold text-gold-300 mb-2">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-olive-950/60 to-olive-950/40 border border-olive-700/50 text-center">
+            <p className="text-[11px] uppercase tracking-wider font-bold text-olive-300 mb-2">
               Confirm This Number
             </p>
             <div className="text-6xl font-black text-sand-50 tracking-[0.3em] font-mono">
@@ -132,7 +132,7 @@ function DeviceAuthenticator({ onProofGenerated }) {
             <p className="text-xs text-sand-400 mt-3">
               {challenge.instructions}
             </p>
-            <div className="flex items-center justify-center space-x-1 mt-2 text-[10px] text-gold-400">
+            <div className="flex items-center justify-center space-x-1 mt-2 text-[10px] text-olive-400">
               <Clock className="w-3 h-3" />
               <span>Expires in {challenge.expires_in_seconds}s</span>
             </div>
@@ -150,12 +150,12 @@ function DeviceAuthenticator({ onProofGenerated }) {
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                 placeholder="••••••"
                 maxLength={8}
-                className="flex-1 px-4 py-2.5 bg-sand-900 border border-sand-700 rounded-xl text-sand-50 font-mono text-lg tracking-[0.4em] text-center focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 placeholder:text-sand-600 placeholder:tracking-normal"
+                className="flex-1 px-4 py-2.5 bg-sand-900 border border-sand-700 rounded-xl text-sand-50 font-mono text-lg tracking-[0.4em] text-center focus:outline-none focus:border-olive-500 focus:ring-1 focus:ring-olive-500/30 placeholder:text-sand-600 placeholder:tracking-normal"
               />
               <button
                 onClick={verifyPin}
                 disabled={loading || pin.length < 4}
-                className="px-4 py-2.5 bg-navy-600 hover:bg-navy-500 disabled:opacity-40 text-white font-bold rounded-xl transition flex items-center space-x-1.5"
+                className="px-4 py-2.5 bg-burgundy-600 hover:bg-burgundy-500 disabled:opacity-40 text-white font-bold rounded-xl transition flex items-center space-x-1.5"
               >
                 {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
                 <span>Verify</span>
@@ -167,7 +167,7 @@ function DeviceAuthenticator({ onProofGenerated }) {
           </div>
 
           {error && (
-            <div className="p-2 rounded-lg bg-maroon-950/40 border border-maroon-800/40 text-xs text-maroon-300 flex items-center space-x-2">
+            <div className="p-2 rounded-lg bg-burgundy-950/40 border border-burgundy-800/40 text-xs text-burgundy-300 flex items-center space-x-2">
               <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -358,16 +358,16 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
     <div className="space-y-4">
       
       {/* ── Header Banner ── */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-gold-950/50 via-gold-950/40 to-sand-950 border border-gold-800/40 shadow-2xl">
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-olive-950/50 via-olive-950/40 to-sand-950 border border-olive-800/40 shadow-2xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-navy-600 to-gold-700 shadow-lg shadow-gold-900/40">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-burgundy-600 to-olive-700 shadow-lg shadow-olive-900/40">
               <Shield className="w-5 h-5 text-sand-50" />
             </div>
             <div>
               <h3 className="text-base font-semibold text-sand-50 flex items-center space-x-2">
                 <span>Zero-Knowledge Privacy Vault</span>
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-gold-900/60 text-gold-300 border border-gold-700/50 uppercase">ZK-SNARK</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-olive-900/60 text-olive-300 border border-olive-700/50 uppercase">ZK-SNARK</span>
               </h3>
               <p className="text-[11px] text-sand-400">
                 Prove identity or authenticity without revealing private data
@@ -403,7 +403,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             onClick={() => setMode('webcam')}
             className={`flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
               mode === 'webcam'
-                ? 'bg-gradient-to-r from-navy-600 to-navy-600 text-white shadow-md shadow-gold-900/40'
+                ? 'bg-gradient-to-r from-burgundy-600 to-burgundy-600 text-white shadow-md shadow-olive-900/40'
                 : 'text-sand-400 hover:text-sand-200 hover:bg-sand-800/60'
             }`}
           >
@@ -414,7 +414,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             onClick={() => setMode('authenticator')}
             className={`flex-1 flex items-center justify-center space-x-2 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
               mode === 'authenticator'
-                ? 'bg-gradient-to-r from-navy-600 to-navy-600 text-white shadow-md shadow-gold-900/40'
+                ? 'bg-gradient-to-r from-burgundy-600 to-burgundy-600 text-white shadow-md shadow-olive-900/40'
                 : 'text-sand-400 hover:text-sand-200 hover:bg-sand-800/60'
             }`}
           >
@@ -430,22 +430,22 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
           {mode === 'webcam' ? (
             <div className="space-y-3">
               <div className="p-4 rounded-xl bg-sand-950/80 border border-sand-800 text-xs text-sand-300 space-y-2">
-                <div className="flex items-center space-x-2 text-gold-300 font-bold text-[11px] uppercase tracking-wider">
+                <div className="flex items-center space-x-2 text-olive-300 font-bold text-[11px] uppercase tracking-wider">
                   <Eye className="w-3.5 h-3.5" />
                   <span>How Webcam ZK-Liveness Works</span>
                 </div>
                 <ol className="space-y-1 text-sand-400 list-decimal list-inside">
                   <li>You complete the 4-step liveness challenge (front, left, right, hand occlusion)</li>
                   <li>VeriLens hashes each frame into a cryptographic commitment</li>
-                  <li>A ZK-SNARK proof is generated: <strong className="text-gold-300">"A real human passed this challenge"</strong></li>
-                  <li>The raw video frames are <strong className="text-maroon-300">discarded</strong> — zero biometric data is stored</li>
+                  <li>A ZK-SNARK proof is generated: <strong className="text-olive-300">"A real human passed this challenge"</strong></li>
+                  <li>The raw video frames are <strong className="text-burgundy-300">discarded</strong> — zero biometric data is stored</li>
                 </ol>
               </div>
 
               <button
                 onClick={handleGenerateProof}
                 disabled={generating || (!hasLivenessReport && !hasMediaReport)}
-                className="w-full py-3 px-4 bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 text-white font-bold rounded-xl shadow-lg shadow-gold-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
+                className="w-full py-3 px-4 bg-gradient-to-r from-burgundy-600 to-burgundy-600 hover:from-burgundy-500 hover:to-burgundy-500 text-white font-bold rounded-xl shadow-lg shadow-olive-900/30 disabled:opacity-40 transition flex items-center justify-center space-x-2"
               >
                 {generating ? (
                   <>
@@ -469,13 +469,13 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
           ) : (
             <div className="space-y-3">
               <div className="p-4 rounded-xl bg-sand-950/80 border border-sand-800 text-xs text-sand-300 space-y-2">
-                <div className="flex items-center space-x-2 text-gold-300 font-bold text-[11px] uppercase tracking-wider">
+                <div className="flex items-center space-x-2 text-olive-300 font-bold text-[11px] uppercase tracking-wider">
                   <Smartphone className="w-3.5 h-3.5" />
                   <span>Device / PIN Authenticator Mode</span>
                 </div>
                 <p className="text-sand-400">
-                  For devices without a camera, VeriLens provides a <strong className="text-gold-300">Microsoft Authenticator-style</strong> fallback.
-                  Confirm a 2-digit challenge number and enter your device PIN. The PIN is <strong className="text-maroon-300">SHA-256 hashed locally</strong> and 
+                  For devices without a camera, VeriLens provides a <strong className="text-olive-300">Microsoft Authenticator-style</strong> fallback.
+                  Confirm a 2-digit challenge number and enter your device PIN. The PIN is <strong className="text-burgundy-300">SHA-256 hashed locally</strong> and 
                   proven via zero-knowledge — never transmitted or stored as plaintext.
                 </p>
               </div>
@@ -541,9 +541,9 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
                   </div>
                 </div>
                 <div className="p-2.5 rounded-lg bg-sand-900/80 border border-sand-800 font-mono text-[10px] text-sand-400 space-y-1">
-                  <div><span className="text-gold-400">nullifier:</span> {(publicSignals.nullifier_hash || '').slice(0, 20)}...{(publicSignals.nullifier_hash || '').slice(-8)}</div>
-                  <div><span className="text-gold-400">epoch:</span> {publicSignals.timestamp_epoch} ({new Date((publicSignals.timestamp_epoch || 0) * 1000).toLocaleTimeString()})</div>
-                  <div><span className="text-gold-400">method:</span> {publicSignals.challenge_method}</div>
+                  <div><span className="text-olive-400">nullifier:</span> {(publicSignals.nullifier_hash || '').slice(0, 20)}...{(publicSignals.nullifier_hash || '').slice(-8)}</div>
+                  <div><span className="text-olive-400">epoch:</span> {publicSignals.timestamp_epoch} ({new Date((publicSignals.timestamp_epoch || 0) * 1000).toLocaleTimeString()})</div>
+                  <div><span className="text-olive-400">method:</span> {publicSignals.challenge_method}</div>
                 </div>
                 {zkProof.metadata?.what_is_proven?.map((item, i) => (
                   <div key={i} className="flex items-start space-x-2 text-[11px] text-olive-200">
@@ -559,7 +559,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
           <div className="rounded-xl border border-sand-800 overflow-hidden">
             <button
               onClick={() => toggleSection('private')}
-              className="w-full p-3 bg-sand-900/80 flex items-center justify-between text-xs font-bold text-maroon-300 uppercase tracking-wider hover:bg-sand-900 transition"
+              className="w-full p-3 bg-sand-900/80 flex items-center justify-between text-xs font-bold text-burgundy-300 uppercase tracking-wider hover:bg-sand-900 transition"
             >
               <div className="flex items-center space-x-2">
                 <Lock className="w-3.5 h-3.5" />
@@ -570,22 +570,22 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             {expandedSection === 'private' && (
               <div className="p-3 bg-sand-950/80 space-y-2 text-xs">
                 {zkProof.metadata?.what_remains_private?.map((item, i) => (
-                  <div key={i} className="flex items-start space-x-2 text-[11px] text-maroon-200">
-                    <EyeOff className="w-3.5 h-3.5 text-maroon-400 mt-0.5 shrink-0" />
+                  <div key={i} className="flex items-start space-x-2 text-[11px] text-burgundy-200">
+                    <EyeOff className="w-3.5 h-3.5 text-burgundy-400 mt-0.5 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
-                <div className="p-2.5 rounded-lg bg-maroon-950/20 border border-maroon-900/30 text-[10px] text-maroon-300">
+                <div className="p-2.5 rounded-lg bg-burgundy-950/20 border border-burgundy-900/30 text-[10px] text-burgundy-300">
                   <strong>Privacy Guarantee:</strong> Even if this server is fully compromised, 
                   attackers gain <strong>zero knowledge</strong> of your facial biometric data, 
                   identity, PIN, or document content. Only the mathematical proof exists.
                 </div>
                 {zkProof.private_inputs_summary && (
                   <div className="p-2.5 rounded-lg bg-sand-900/80 border border-sand-800 font-mono text-[10px] text-sand-400 space-y-1">
-                    <div><span className="text-maroon-400">witness_hash:</span> {(zkProof.private_inputs_summary.witness_hash || '').slice(0, 20)}...</div>
-                    <div><span className="text-maroon-400">private_bytes:</span> {zkProof.private_inputs_summary.total_private_bytes} bytes (never transmitted)</div>
+                    <div><span className="text-burgundy-400">witness_hash:</span> {(zkProof.private_inputs_summary.witness_hash || '').slice(0, 20)}...</div>
+                    <div><span className="text-burgundy-400">private_bytes:</span> {zkProof.private_inputs_summary.total_private_bytes} bytes (never transmitted)</div>
                     {zkProof.private_inputs_summary.pin_commitment && (
-                      <div><span className="text-maroon-400">pin_commitment:</span> {zkProof.private_inputs_summary.pin_commitment.slice(0, 16)}... (hash only)</div>
+                      <div><span className="text-burgundy-400">pin_commitment:</span> {zkProof.private_inputs_summary.pin_commitment.slice(0, 16)}... (hash only)</div>
                     )}
                   </div>
                 )}
@@ -597,7 +597,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
           <div className="rounded-xl border border-sand-800 overflow-hidden">
             <button
               onClick={() => toggleSection('proof')}
-              className="w-full p-3 bg-sand-900/80 flex items-center justify-between text-xs font-bold text-gold-300 uppercase tracking-wider hover:bg-sand-900 transition"
+              className="w-full p-3 bg-sand-900/80 flex items-center justify-between text-xs font-bold text-olive-300 uppercase tracking-wider hover:bg-sand-900 transition"
             >
               <div className="flex items-center space-x-2">
                 <Binary className="w-3.5 h-3.5" />
@@ -608,14 +608,14 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             {expandedSection === 'proof' && zkProof.proof && (
               <div className="p-3 bg-sand-950/80 space-y-2 text-xs font-mono">
                 <div className="p-2 rounded-lg bg-sand-900/80 border border-sand-800 text-[10px] text-sand-400 space-y-1">
-                  <div><span className="text-gold-400">π_a[0]:</span> <span className="text-sand-300">{zkProof.proof.pi_a?.[0]}</span></div>
-                  <div><span className="text-gold-400">π_a[1]:</span> <span className="text-sand-300">{zkProof.proof.pi_a?.[1]}</span></div>
-                  <div><span className="text-gold-400">π_b[0]:</span> <span className="text-sand-300">[{zkProof.proof.pi_b?.[0]?.join(', ')}]</span></div>
-                  <div><span className="text-gold-400">π_b[1]:</span> <span className="text-sand-300">[{zkProof.proof.pi_b?.[1]?.join(', ')}]</span></div>
-                  <div><span className="text-gold-400">π_c[0]:</span> <span className="text-sand-300">{zkProof.proof.pi_c?.[0]}</span></div>
-                  <div><span className="text-gold-400">π_c[1]:</span> <span className="text-sand-300">{zkProof.proof.pi_c?.[1]}</span></div>
+                  <div><span className="text-olive-400">π_a[0]:</span> <span className="text-sand-300">{zkProof.proof.pi_a?.[0]}</span></div>
+                  <div><span className="text-olive-400">π_a[1]:</span> <span className="text-sand-300">{zkProof.proof.pi_a?.[1]}</span></div>
+                  <div><span className="text-olive-400">π_b[0]:</span> <span className="text-sand-300">[{zkProof.proof.pi_b?.[0]?.join(', ')}]</span></div>
+                  <div><span className="text-olive-400">π_b[1]:</span> <span className="text-sand-300">[{zkProof.proof.pi_b?.[1]?.join(', ')}]</span></div>
+                  <div><span className="text-olive-400">π_c[0]:</span> <span className="text-sand-300">{zkProof.proof.pi_c?.[0]}</span></div>
+                  <div><span className="text-olive-400">π_c[1]:</span> <span className="text-sand-300">{zkProof.proof.pi_c?.[1]}</span></div>
                   <div className="pt-1 border-t border-sand-800">
-                    <span className="text-gold-400">vk_hash:</span> <span className="text-sand-300 break-all">{zkProof.proof.verification_key_hash}</span>
+                    <span className="text-olive-400">vk_hash:</span> <span className="text-sand-300 break-all">{zkProof.proof.verification_key_hash}</span>
                   </div>
                 </div>
               </div>
@@ -628,8 +628,8 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             disabled={verifying}
             className={`w-full py-3 px-4 font-bold rounded-xl shadow-lg transition flex items-center justify-center space-x-2 ${
               verificationResult?.verified
-                ? 'bg-gradient-to-r from-olive-600 to-navy-600 text-white shadow-olive-900/30'
-                : 'bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 text-white shadow-gold-900/30'
+                ? 'bg-gradient-to-r from-olive-600 to-burgundy-600 text-white shadow-olive-900/30'
+                : 'bg-gradient-to-r from-burgundy-600 to-burgundy-600 hover:from-burgundy-500 hover:to-burgundy-500 text-white shadow-olive-900/30'
             } disabled:opacity-60`}
           >
             {verifying ? (
@@ -655,7 +655,7 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
             <div className={`p-4 rounded-xl border space-y-3 ${
               verificationResult.verified
                 ? 'bg-olive-950/20 border-olive-800/40'
-                : 'bg-maroon-950/20 border-maroon-800/40'
+                : 'bg-burgundy-950/20 border-burgundy-800/40'
             }`}>
               <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider">
                 {verificationResult.verified ? (
@@ -665,8 +665,8 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
                   </>
                 ) : (
                   <>
-                    <ShieldAlert className="w-4 h-4 text-maroon-400" />
-                    <span className="text-maroon-300">{verificationResult.summary}</span>
+                    <ShieldAlert className="w-4 h-4 text-burgundy-400" />
+                    <span className="text-burgundy-300">{verificationResult.summary}</span>
                   </>
                 )}
               </div>
@@ -677,9 +677,9 @@ export default function ZkProofVault({ livenessReport, capturedFrames, mediaRepo
                     {check.status === 'pass' ? (
                       <CheckCircle2 className="w-3.5 h-3.5 text-olive-400 mt-0.5 shrink-0" />
                     ) : check.status === 'warning' ? (
-                      <AlertTriangle className="w-3.5 h-3.5 text-gold-400 mt-0.5 shrink-0" />
+                      <AlertTriangle className="w-3.5 h-3.5 text-olive-400 mt-0.5 shrink-0" />
                     ) : (
-                      <ShieldAlert className="w-3.5 h-3.5 text-maroon-400 mt-0.5 shrink-0" />
+                      <ShieldAlert className="w-3.5 h-3.5 text-burgundy-400 mt-0.5 shrink-0" />
                     )}
                     <div>
                       <span className="font-semibold text-sand-50">{check.check}</span>

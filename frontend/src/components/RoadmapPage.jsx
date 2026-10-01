@@ -24,11 +24,11 @@ const SHIPPED = [
 // Full class strings so Tailwind can detect them at build time
 const COLORS = {
   emerald: 'text-olive-400 border-olive-800/60 bg-olive-950/40',
-  cyan: 'text-gold-400 border-gold-800/60 bg-gold-950/40',
-  sky: 'text-gold-400 border-gold-800/60 bg-gold-950/40',
-  indigo: 'text-gold-300 border-gold-800/60 bg-gold-950/40',
-  amber: 'text-gold-400 border-gold-800/60 bg-gold-950/40',
-  rose: 'text-maroon-400 border-maroon-800/60 bg-maroon-950/40'
+  cyan: 'text-olive-400 border-olive-800/60 bg-olive-950/40',
+  sky: 'text-olive-400 border-olive-800/60 bg-olive-950/40',
+  indigo: 'text-olive-300 border-olive-800/60 bg-olive-950/40',
+  amber: 'text-olive-400 border-olive-800/60 bg-olive-950/40',
+  rose: 'text-burgundy-400 border-burgundy-800/60 bg-burgundy-950/40'
 };
 
 const PHASES = [
@@ -97,13 +97,13 @@ export default function RoadmapPage({ setActiveTab }) {
 
       {/* Top Banner */}
       <div className="p-5 sm:p-6 rounded-2xl glass-panel border border-sand-800">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gold-950/80 border border-gold-700/60 text-gold-300 text-xs font-semibold mb-3">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-olive-950/80 border border-olive-700/60 text-olive-300 text-xs font-semibold mb-3">
           <Compass className="w-3.5 h-3.5" />
           <span>Product Evolution — Beyond the MVP</span>
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-semibold text-sand-50">
-          VeriLens <span className="bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent">Future Roadmap</span>
+          VeriLens <span className="bg-gradient-to-r from-olive-400 to-olive-300 bg-clip-text text-transparent">Future Roadmap</span>
         </h2>
 
         <p className="mt-2 text-sm text-sand-300 leading-relaxed max-w-5xl">
@@ -142,20 +142,20 @@ export default function RoadmapPage({ setActiveTab }) {
         {PHASES.map(({ phase, name, summary, items }) => (
           <section key={phase} className="p-5 rounded-2xl glass-panel border border-sand-800 flex flex-col space-y-4">
             <div>
-              <p className="text-xs uppercase tracking-wider font-bold text-gold-400">{phase} — {name}</p>
+              <p className="text-xs uppercase tracking-wider font-bold text-olive-400">{phase} — {name}</p>
               <p className="text-xs text-sand-400 mt-0.5">{summary}</p>
             </div>
 
             {items.map(({ title, icon: Icon, color, description }) => (
               <div
                 key={title}
-                className="flex-1 p-4 rounded-2xl bg-sand-950/70 border border-sand-800 hover:border-gold-700/60 transition group"
+                className="flex-1 p-4 rounded-2xl bg-sand-950/70 border border-sand-800 hover:border-olive-700/60 transition group"
               >
                 <div className="flex items-center space-x-2.5 mb-2">
                   <div className={`p-2 rounded-xl border ${COLORS[color]}`}>
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="font-bold text-sm text-sand-50 group-hover:text-gold-300 transition">{title}</span>
+                  <span className="font-bold text-sm text-sand-50 group-hover:text-olive-300 transition">{title}</span>
                 </div>
                 <p className="text-xs text-sand-400 leading-relaxed">{description}</p>
               </div>

@@ -33,7 +33,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
         </button>
 
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2.5 bg-gold-950/80 border border-gold-800/80 rounded-xl text-gold-400">
+          <div className="p-2.5 bg-olive-950/80 border border-olive-800/80 rounded-xl text-olive-400">
             <Key className="w-5 h-5" />
           </div>
           <div>
@@ -56,7 +56,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
               placeholder="AIzaSy..."
-              className="w-full px-3.5 py-2.5 bg-sand-950 border border-sand-700/80 rounded-xl text-sm text-sand-100 placeholder-sand-600 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500 transition font-mono"
+              className="w-full px-3.5 py-2.5 bg-sand-950 border border-sand-700/80 rounded-xl text-sm text-sand-100 placeholder-sand-600 focus:outline-none focus:border-olive-500 focus:ring-1 focus:ring-olive-500 transition font-mono"
             />
           </div>
 
@@ -65,7 +65,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center text-gold-400 hover:text-gold-300 hover:underline"
+              className="inline-flex items-center text-olive-400 hover:text-olive-300 hover:underline"
             >
               <span>Get a free key from Google AI Studio</span>
               <ExternalLink className="w-3 h-3 ml-1" />
@@ -74,7 +74,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
               <button
                 type="button"
                 onClick={handleClear}
-                className="text-maroon-400 hover:text-maroon-300 hover:underline"
+                className="text-burgundy-400 hover:text-burgundy-300 hover:underline"
               >
                 Clear key
               </button>
@@ -83,7 +83,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
 
           <div className="p-3 bg-sand-950/60 border border-sand-800 rounded-xl text-[11px] text-sand-400 space-y-1">
             <div className="flex items-center space-x-1.5 text-sand-300 font-medium">
-              <Shield className="w-3.5 h-3.5 text-gold-400" />
+              <Shield className="w-3.5 h-3.5 text-olive-400" />
               <span>Client-Side Local Storage Privacy</span>
             </div>
             <p>
@@ -101,7 +101,7 @@ export default function ApiKeyModal({ isOpen, onClose, apiKey, onSaveApiKey }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-2 px-3 text-xs font-semibold text-white bg-gradient-to-r from-navy-600 to-navy-600 hover:from-navy-500 hover:to-navy-500 rounded-xl shadow-lg shadow-gold-900/30 flex items-center justify-center space-x-1.5 transition"
+              className="flex-1 py-2 px-3 text-xs font-semibold text-white bg-gradient-to-r from-burgundy-600 to-burgundy-600 hover:from-burgundy-500 hover:to-burgundy-500 rounded-xl shadow-lg shadow-olive-900/30 flex items-center justify-center space-x-1.5 transition"
             >
               {savedSuccess ? (
                 <>

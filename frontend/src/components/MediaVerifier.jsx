@@ -19,12 +19,25 @@ import {
   Sliders,
   CheckSquare,
   Square,
-  Bot,
-  Cpu,
-  Zap,
   Fingerprint
 } from 'lucide-react';
 import ImageAnnotator from './ImageAnnotator';
+
+// Colour + short label helpers for the compact report panel
+const likelihoodStyle = (value = '') => {
+  const v = value.toLowerCase();
+  if (v.includes('high')) return 'bg-burgundy-600 text-white border-burgundy-600';
+  if (v.includes('moderate') || v.includes('medium')) return 'bg-burgundy-950 text-burgundy-400 border-burgundy-700';
+  return 'bg-olive-600 text-white border-olive-600';
+};
+
+const shortLikelihood = (value) => (value ? value.split(/[\s(/]/)[0] : '—');
+
+const levelStyle = (level) => {
+  if (level === 'high') return 'bg-burgundy-600 text-white border-burgundy-600';
+  if (level === 'medium') return 'bg-burgundy-950 text-burgundy-400 border-burgundy-700';
+  return 'bg-olive-600 text-white border-olive-600';
+};
 
 export default function MediaVerifier({ 
   apiKey, 
@@ -164,18 +177,18 @@ export default function MediaVerifier({
     const cat = (category || '').toLowerCase();
     if (cat.includes('synthetic') || cat.includes('generated')) {
       return {
-        bg: 'bg-maroon-600',
+        bg: 'bg-burgundy-600',
         text: 'text-white',
-        border: 'border-maroon-600',
+        border: 'border-burgundy-600',
         icon: ShieldAlert,
         glow: 'glow-rose'
       };
     }
     if (cat.includes('manipulation') || cat.includes('inpainting')) {
       return {
-        bg: 'bg-gold-500',
-        text: 'text-navy-600',
-        border: 'border-gold-500',
+        bg: 'bg-burgundy-950',
+        text: 'text-burgundy-400',
+        border: 'border-burgundy-700',
         icon: AlertTriangle,
         glow: 'glow-amber'
       };
@@ -208,7 +221,7 @@ export default function MediaVerifier({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl glass-panel border border-sand-800">
         <div>
           <h2 className="text-xl font-semibold text-sand-50 flex items-center space-x-2">
-            <Layers className="w-5 h-5 text-gold-400" />
+            <Layers className="w-5 h-5 text-olive-400" />
             <span>Media Trust Report</span>
           </h2>
           <p className="text-xs text-sand-400 mt-0.5">
@@ -225,9 +238,9 @@ export default function MediaVerifier({
             <button
               key={s.id}
               onClick={() => handleSelectSample(s)}
-              className="text-xs px-2.5 py-1.5 rounded-xl bg-sand-900 hover:bg-sand-800 text-sand-300 border border-sand-700/80 hover:border-gold-500/60 transition flex items-center space-x-1.5"
+              className="text-xs px-2.5 py-1.5 rounded-xl bg-sand-900 hover:bg-sand-800 text-sand-300 border border-sand-700/80 hover:border-olive-500/60 transition flex items-center space-x-1.5"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-olive-400" />
               <span>{s.title.split('(')[0]}</span>
             </button>
           ))}
@@ -250,7 +263,7 @@ export default function MediaVerifier({
                 handleFileUpload(e.dataTransfer.files[0]);
               }
             }}
-            className="group cursor-pointer p-6 rounded-2xl border-2 border-dashed border-sand-700 hover:border-gold-500/80 bg-sand-950/60 hover:bg-sand-900/60 transition-all duration-200 text-center flex flex-col items-center justify-center space-y-3"
+            className="group cursor-pointer p-6 rounded-2xl border-2 border-dashed border-sand-700 hover:border-olive-500/80 bg-sand-950/60 hover:bg-sand-900/60 transition-all duration-200 text-center flex flex-col items-center justify-center space-y-3"
           >
             <input
               ref={fileInputRef}
@@ -263,12 +276,12 @@ export default function MediaVerifier({
                 }
               }}
             />
-            <div className="p-3.5 rounded-2xl bg-gold-950/80 border border-gold-800/80 text-gold-400 group-hover:scale-110 transition shadow-lg shadow-gold-950/40">
+            <div className="p-3.5 rounded-2xl bg-olive-950/80 border border-olive-800/80 text-olive-400 group-hover:scale-110 transition shadow-lg shadow-olive-950/40">
               <Upload className="w-6 h-6" />
             </div>
             <div>
               <p className="text-sm font-bold text-sand-50">
-                Drop your image here, or <span className="text-gold-400">browse files</span>
+                Drop your image here, or <span className="text-olive-400">browse files</span>
               </p>
               <p className="text-[11px] text-sand-400 mt-1">
                 Supports JPG, PNG, WEBP, TIFF (Retains EXIF tags)
@@ -308,7 +321,7 @@ export default function MediaVerifier({
               </div>
               <div>
                 <span className="text-sand-500 block">Hardware EXIF</span>
-                <span className={currentReport.metadata.has_exif ? "text-olive-400 font-semibold" : "text-gold-400 font-semibold"}>
+                <span className={currentReport.metadata.has_exif ? "text-olive-400 font-semibold" : "text-olive-400 font-semibold"}>
                   {currentReport.metadata.has_exif ? "Detected" : "None"}
                 </span>
               </div>
@@ -321,11 +334,11 @@ export default function MediaVerifier({
         <div className="lg:col-span-7 space-y-4">
           
           {loading ? (
-            <div className="min-h-[480px] rounded-2xl glass-panel border border-gold-800/40 p-8 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="min-h-[480px] rounded-2xl glass-panel border border-olive-800/40 p-8 flex flex-col items-center justify-center text-center space-y-4">
               <div className="relative w-16 h-16">
-                <div className="absolute inset-0 rounded-full border-4 border-gold-500/20 border-t-gold-400 animate-spin" />
-                <div className="absolute inset-2 rounded-full border-4 border-gold-500/20 border-b-gold-400 animate-spin" style={{ animationDirection: 'reverse' }} />
-                <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-gold-300 animate-pulse" />
+                <div className="absolute inset-0 rounded-full border-4 border-olive-500/20 border-t-olive-400 animate-spin" />
+                <div className="absolute inset-2 rounded-full border-4 border-olive-500/20 border-b-olive-400 animate-spin" style={{ animationDirection: 'reverse' }} />
+                <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-olive-300 animate-pulse" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-sand-50">Synthesizing Multimodal Evidence</h3>
@@ -336,325 +349,167 @@ export default function MediaVerifier({
             </div>
           ) : currentReport ? (
             <div className="rounded-2xl glass-panel border border-sand-800 overflow-hidden shadow-2xl space-y-5 p-5 sm:p-6">
-              
-              {/* Report Header: Verdict & Confidence */}
-              <div className="space-y-3 pb-4 border-b border-sand-800">
+
+              {/* Verdict */}
+              <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center space-x-2">
-                    <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${verdictStyles.bg} ${verdictStyles.text} ${verdictStyles.border} ${verdictStyles.glow}`}>
-                      <VerdictIcon className="w-4 h-4" />
-                      <span>{currentReport.verdict_category}</span>
-                    </span>
+                  <span className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-sm font-bold border ${verdictStyles.bg} ${verdictStyles.text} ${verdictStyles.border} ${verdictStyles.glow}`}>
+                    <VerdictIcon className="w-4 h-4" />
+                    <span>{currentReport.verdict_category}</span>
+                  </span>
 
-                    <span className="px-2.5 py-1 rounded-xl text-xs font-medium bg-sand-900 text-sand-300 border border-sand-700">
-                      Confidence: <strong className="text-sand-50">{currentReport.confidence}</strong>
-                    </span>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={onOpenChat}
-                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-navy-600 hover:bg-navy-500 text-white shadow-md shadow-gold-900/40 transition"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>Ask VeriLens</span>
-                    </button>
-
-                  </div>
+                  <button
+                    onClick={onOpenChat}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-burgundy-600 hover:bg-burgundy-500 text-white shadow-md transition"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Ask VeriLens</span>
+                  </button>
                 </div>
 
-                {/* Executive Summary */}
-                <p className="text-sm text-sand-200 leading-relaxed font-medium">
+                <p className="text-sm text-sand-200 leading-relaxed">
                   {currentReport.summary}
                 </p>
-
-                {currentReport.confidence_explanation && (
-                  <p className="text-xs text-sand-400 italic">
-                    Why {currentReport.confidence.toLowerCase()} confidence: {currentReport.confidence_explanation}
-                  </p>
-                )}
               </div>
 
-              {/* Dedicated AI Generation & Synthetic Media Assessment Card */}
-              {currentReport.ai_assessment && (
-                <div className="p-4 rounded-xl bg-gradient-to-br from-sand-900 via-sand-900 to-gold-950/40 border border-gold-800/50 shadow-lg space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-lg bg-gold-950 text-gold-400 border border-gold-800">
-                        <Bot className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] uppercase tracking-wider font-mono text-gold-400 font-bold block">
-                          AI Generation & Synthetic Model Analysis
-                        </span>
-                        <h4 className="text-sm font-bold text-sand-50 flex items-center space-x-2">
-                          <span>{currentReport.ai_assessment.is_ai_generated || "AI Forensic Classification"}</span>
-                        </h4>
-                      </div>
-                    </div>
+              {/* Key facts */}
+              <div className="grid grid-cols-3 gap-2.5">
+                <div className="p-3 rounded-xl bg-sand-950 border border-sand-800">
+                  <span className="block text-[10px] uppercase tracking-wider font-semibold text-sand-500">AI Likelihood</span>
+                  <span className={`inline-block mt-1.5 px-2 py-0.5 rounded-md text-xs font-bold border ${likelihoodStyle(currentReport.ai_assessment?.ai_likelihood)}`}>
+                    {shortLikelihood(currentReport.ai_assessment?.ai_likelihood)}
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl bg-sand-950 border border-sand-800">
+                  <span className="block text-[10px] uppercase tracking-wider font-semibold text-sand-500">Confidence</span>
+                  <span className="block mt-1.5 text-sm font-bold text-sand-50">{currentReport.confidence || '—'}</span>
+                </div>
+                <div className="p-3 rounded-xl bg-sand-950 border border-sand-800">
+                  <span className="block text-[10px] uppercase tracking-wider font-semibold text-sand-500">Camera Data</span>
+                  <span className={`block mt-1.5 text-sm font-bold ${currentReport.metadata?.has_exif ? 'text-olive-400' : 'text-burgundy-400'}`}>
+                    {currentReport.metadata?.has_exif ? 'Present' : 'Missing'}
+                  </span>
+                </div>
+              </div>
 
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                        (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('high')
-                          ? 'bg-maroon-600 text-white border-maroon-600'
-                          : (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('moderate') || (currentReport.ai_assessment.ai_likelihood || '').toLowerCase().includes('medium')
-                          ? 'bg-gold-500 text-navy-600 border-gold-500'
-                          : 'bg-olive-600 text-white border-olive-600'
-                      }`}>
-                        AI Likelihood: {currentReport.ai_assessment.ai_likelihood}
-                      </span>
-                      {currentReport.ai_assessment.confidence_score && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sand-950 text-sand-300 border border-sand-800">
-                          {currentReport.ai_assessment.confidence_score}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+              {/* Tabs */}
+              <div className="flex border-b border-sand-800 text-xs">
+                {[
+                  ['findings', `Findings (${currentReport.findings?.length || 0})`],
+                  ['exif', 'Camera Data'],
+                  ['next_steps', `Next Steps (${currentReport.what_to_check_next?.length || 0})`]
+                ].map(([id, label]) => (
+                  <button
+                    key={id}
+                    onClick={() => setActiveTab(id)}
+                    className={`pb-2.5 px-3 font-semibold transition border-b-2 ${
+                      activeTab === id
+                        ? 'border-burgundy-600 text-burgundy-400'
+                        : 'border-transparent text-sand-400 hover:text-sand-200'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
 
-                  {currentReport.ai_assessment.suspected_generator && (
-                    <div className="text-xs text-sand-300 flex items-center space-x-1.5 font-medium">
-                      <Cpu className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                      <span><strong>Suspected Pipeline:</strong> {currentReport.ai_assessment.suspected_generator}</span>
-                    </div>
-                  )}
+              {/* Findings — one line each, click to expand */}
+              {activeTab === 'findings' && (
+                <div className="space-y-2">
+                  {currentReport.findings?.map((f) => {
+                    const isSelected = activeFindingId === f.id;
+                    const level = (f.suspicion_level || '').toLowerCase();
 
-                  {currentReport.ai_assessment.key_signatures?.length > 0 && (
-                    <div className="space-y-1.5 pt-1 border-t border-sand-800/60">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-sand-400 block">
-                        Detected Generator & Synthesis Signatures:
-                      </span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {currentReport.ai_assessment.key_signatures.map((sig, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="px-2 py-0.5 rounded-lg text-[11px] font-medium bg-sand-950 border border-sand-700/80 text-gold-300 flex items-center space-x-1"
-                          >
-                            <Zap className="w-3 h-3 text-gold-400" />
-                            <span>{sig}</span>
+                    return (
+                      <button
+                        key={f.id}
+                        onClick={() => setActiveFindingId(isSelected ? null : f.id)}
+                        className={`w-full text-left p-3 rounded-xl border transition ${
+                          isSelected
+                            ? 'bg-sand-900 border-olive-500 ring-1 ring-olive-500/40'
+                            : 'bg-sand-950 border-sand-800 hover:border-sand-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-semibold text-sm text-sand-50">{f.label}</span>
+                          <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${levelStyle(level)}`}>
+                            {level || 'info'}
                           </span>
-                        ))}
+                        </div>
+                        <p className={`mt-1 text-xs text-sand-400 ${isSelected ? '' : 'line-clamp-1'}`}>
+                          {f.what_we_found}
+                        </p>
+                        {isSelected && f.why_suspicious && (
+                          <p className="mt-2 pt-2 border-t border-sand-800 text-xs text-sand-300 leading-relaxed">
+                            <strong className="text-olive-400">Why: </strong>{f.why_suspicious}
+                          </p>
+                        )}
+                      </button>
+                    );
+                  })}
+                  <p className="text-[11px] text-sand-500 pt-1">Tap a finding to see why it matters and highlight it on the image.</p>
+                </div>
+              )}
+
+              {/* Camera data — key facts only */}
+              {activeTab === 'exif' && (
+                <div className="space-y-3 text-xs">
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 p-3.5 rounded-xl bg-sand-950 border border-sand-800">
+                    {[
+                      ['Camera', [currentReport.metadata?.camera_make, currentReport.metadata?.camera_model].filter(Boolean).join(' ') || 'Not recorded'],
+                      ['Editing software', currentReport.metadata?.software || 'None detected'],
+                      ['Captured', currentReport.metadata?.date_time_original || 'Not stamped'],
+                      ['Lens', currentReport.metadata?.lens_model || 'Not recorded']
+                    ].map(([k, v]) => (
+                      <div key={k}>
+                        <dt className="text-sand-500">{k}</dt>
+                        <dd className="font-semibold text-sand-50 mt-0.5">{v}</dd>
                       </div>
-                    </div>
+                    ))}
+                  </dl>
+
+                  {currentReport.metadata?.forensic_flags?.length > 0 && (
+                    <ul className="space-y-1.5">
+                      {currentReport.metadata.forensic_flags.map((flag, idx) => (
+                        <li key={idx} className="flex items-start space-x-2 text-sand-300">
+                          <AlertTriangle className="w-3.5 h-3.5 text-burgundy-400 shrink-0 mt-0.5" />
+                          <span>{flag.title}</span>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               )}
 
-              {/* Sub-Tabs: What We Found | EXIF Metadata | What To Check Next */}
-              <div className="flex border-b border-sand-800 text-xs">
-                <button
-                  onClick={() => setActiveTab('findings')}
-                  className={`pb-2.5 px-3 font-semibold transition border-b-2 ${
-                    activeTab === 'findings'
-                      ? 'border-gold-400 text-gold-300'
-                      : 'border-transparent text-sand-400 hover:text-sand-200'
-                  }`}
-                >
-                  What We Found & Why Suspicious ({currentReport.findings?.length || 0})
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('exif')}
-                  className={`pb-2.5 px-3 font-semibold transition border-b-2 ${
-                    activeTab === 'exif'
-                      ? 'border-gold-400 text-gold-300'
-                      : 'border-transparent text-sand-400 hover:text-sand-200'
-                  }`}
-                >
-                  EXIF & Camera Telemetry
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('next_steps')}
-                  className={`pb-2.5 px-3 font-semibold transition border-b-2 ${
-                    activeTab === 'next_steps'
-                      ? 'border-gold-400 text-gold-300'
-                      : 'border-transparent text-sand-400 hover:text-sand-200'
-                  }`}
-                >
-                  What To Check Next ({currentReport.what_to_check_next?.length || 0})
-                </button>
-              </div>
-
-              {/* TAB 1: Evidence Findings */}
-              {activeTab === 'findings' && (
-                <div className="space-y-3">
-                  {currentReport.findings?.map((f) => {
-                    const isSelected = activeFindingId === f.id;
-                    const isHigh = f.suspicion_level === 'high';
-                    const isMed = f.suspicion_level === 'medium';
-
+              {/* Next steps — simple checklist */}
+              {activeTab === 'next_steps' && (
+                <div className="space-y-2">
+                  {currentReport.what_to_check_next?.map((step, idx) => {
+                    const isDone = !!checkedSteps[idx];
                     return (
-                      <div
-                        key={f.id}
-                        onClick={() => setActiveFindingId(isSelected ? null : f.id)}
-                        className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-sand-900 border-gold-500 shadow-md ring-1 ring-gold-500/50'
-                            : 'bg-sand-950/70 border-sand-800 hover:border-sand-700 hover:bg-sand-900/60'
+                      <button
+                        key={idx}
+                        onClick={() => toggleCheck(idx)}
+                        className={`w-full text-left p-3 rounded-xl border transition flex items-start space-x-2.5 text-xs ${
+                          isDone
+                            ? 'bg-sand-950 border-sand-800 text-sand-500 line-through'
+                            : 'bg-sand-950 border-sand-800 hover:border-olive-700 text-sand-200'
                         }`}
                       >
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-bold text-sm text-sand-50">{f.label}</span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-sand-900 text-sand-400 border border-sand-800">
-                              {f.category}
-                            </span>
-                          </div>
-
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            isHigh
-                              ? 'bg-maroon-600 text-white border border-maroon-600'
-                              : isMed
-                              ? 'bg-gold-500 text-navy-600 border border-gold-500'
-                              : 'bg-olive-600 text-white border border-olive-600'
-                          }`}>
-                            {f.suspicion_level} Suspicion
-                          </span>
-                        </div>
-
-                        {/* What we found */}
-                        <div className="space-y-2 text-xs">
-                          <div>
-                            <span className="text-sand-400 font-semibold block text-[11px] uppercase tracking-wide">
-                              What we found:
-                            </span>
-                            <p className="text-sand-200 mt-0.5">{f.what_we_found}</p>
-                          </div>
-
-                          {/* Why it's suspicious - The core differentiator! */}
-                          <div className="p-2.5 rounded-lg bg-gold-950/30 border border-gold-800/40">
-                            <span className="text-gold-300 font-bold block text-[11px] uppercase tracking-wide flex items-center space-x-1">
-                              <Sparkles className="w-3 h-3 text-gold-400" />
-                              <span>Why It’s Suspicious:</span>
-                            </span>
-                            <p className="text-sand-300 mt-1 leading-relaxed">{f.why_suspicious}</p>
-                          </div>
-                        </div>
-
-                      </div>
+                        {isDone
+                          ? <CheckSquare className="w-4 h-4 text-olive-400 shrink-0" />
+                          : <Square className="w-4 h-4 text-sand-400 shrink-0" />}
+                        <span className="leading-relaxed">{step}</span>
+                      </button>
                     );
                   })}
                 </div>
               )}
 
-              {/* TAB 2: EXIF & Telemetry */}
-              {activeTab === 'exif' && (
-                <div className="space-y-4 text-xs">
-                  <div className="p-3.5 bg-sand-950/80 rounded-xl border border-sand-800 space-y-2">
-                    <h4 className="font-bold text-sand-50 text-xs uppercase tracking-wide text-gold-400">
-                      Camera & Sensor Telemetry
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sand-300">
-                      <div>
-                        <span className="text-sand-500 block">Camera Hardware:</span>
-                        <span className="font-semibold text-sand-50">
-                          {currentReport.metadata?.camera_make || 'No hardware record'} {currentReport.metadata?.camera_model || ''}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-sand-500 block">Software Used:</span>
-                        <span className="font-semibold text-sand-50">
-                          {currentReport.metadata?.software || 'None detected'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-sand-500 block">Capture Date/Time:</span>
-                        <span className="font-mono text-sand-200">
-                          {currentReport.metadata?.date_time_original || 'Not stamped'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-sand-500 block">Lens & Exposure:</span>
-                        <span className="text-sand-200">
-                          {currentReport.metadata?.lens_model || 'N/A'} {currentReport.metadata?.exposure_time ? `(${currentReport.metadata.exposure_time}, ${currentReport.metadata.f_number})` : ''}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Forensic Heuristic Flags from EXIF */}
-                  {currentReport.metadata?.forensic_flags?.length > 0 && (
-                    <div className="space-y-2">
-                      <h4 className="font-bold text-sand-400 text-xs uppercase tracking-wider">
-                        Metadata Heuristic Flags ({currentReport.metadata.forensic_flags.length})
-                      </h4>
-                      {currentReport.metadata.forensic_flags.map((flag, idx) => (
-                        <div
-                          key={idx}
-                          className="p-3 rounded-xl bg-sand-950 border border-gold-900/40 text-xs space-y-1"
-                        >
-                          <div className="flex items-center space-x-2 text-gold-400 font-bold">
-                            <AlertTriangle className="w-3.5 h-3.5" />
-                            <span>{flag.title}</span>
-                          </div>
-                          <p className="text-sand-300 text-[11px]">{flag.detail}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Raw tags preview */}
-                  {currentReport.metadata?.raw_exif_tags && Object.keys(currentReport.metadata.raw_exif_tags).length > 0 && (
-                    <div className="p-3 bg-sand-950/80 rounded-xl border border-sand-800">
-                      <span className="text-sand-400 font-bold block mb-2">Raw EXIF Fields</span>
-                      <div className="max-h-40 overflow-y-auto space-y-1 font-mono text-[10px] text-sand-400">
-                        {Object.entries(currentReport.metadata.raw_exif_tags).slice(0, 15).map(([k, v]) => (
-                          <div key={k} className="flex justify-between border-b border-sand-900 pb-0.5">
-                            <span className="text-sand-500">{k}</span>
-                            <span className="text-sand-300 truncate max-w-[200px]">{String(v)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* TAB 3: What To Check Next */}
-              {activeTab === 'next_steps' && (
-                <div className="space-y-3">
-                  <div className="p-3 rounded-xl bg-gold-950/30 border border-gold-800/40 text-xs text-gold-300 flex items-start space-x-2">
-                    <Info className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                    <p>
-                      <strong>Actionable Digital Verification:</strong> Rather than trusting an automated verdict, follow these practical human verification steps.
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    {currentReport.what_to_check_next?.map((step, idx) => {
-                      const isDone = !!checkedSteps[idx];
-                      return (
-                        <div
-                          key={idx}
-                          onClick={() => toggleCheck(idx)}
-                          className={`p-3.5 rounded-xl border transition cursor-pointer flex items-start space-x-3 text-xs ${
-                            isDone 
-                              ? 'bg-sand-950/40 border-sand-800 text-sand-500 line-through' 
-                              : 'bg-sand-950/80 border-sand-800 hover:border-gold-700/60 text-sand-200'
-                          }`}
-                        >
-                          <div className="mt-0.5">
-                            {isDone ? (
-                              <CheckSquare className="w-4 h-4 text-olive-400" />
-                            ) : (
-                              <Square className="w-4 h-4 text-sand-400" />
-                            )}
-                          </div>
-                          <span className="leading-relaxed">{step}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Disclaimer Notice */}
-              <div className="p-3 rounded-xl bg-sand-950/60 border border-sand-800 text-[11px] text-sand-400 flex items-center space-x-2">
-                <Info className="w-4 h-4 text-gold-400 shrink-0" />
-                <p>
-                  <strong className="text-sand-300">Evidence, Not Verdicts:</strong> {currentReport.disclaimer || "VeriLens provides evidence and reasoning signals, not absolute proof of authenticity."}
-                </p>
-              </div>
+              <p className="text-[11px] text-sand-500 flex items-center space-x-1.5">
+                <Info className="w-3.5 h-3.5 shrink-0" />
+                <span>Evidence, not verdicts — verify before you trust or share.</span>
+              </p>
 
             </div>
           ) : (
