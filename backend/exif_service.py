@@ -57,7 +57,10 @@ def extract_image_metadata(image_bytes: bytes, filename: str = "upload.jpg") -> 
             metadata["png_info"] = dict(pil_img.text)
             for key, val in pil_img.text.items():
                 lower_val = str(val).lower()
-                if any(k in lower_val for k in ["prompt", "steps", "sampler", "cfg scale", "seed", "model", "stable diffusion", "midjourney", "comfyui"]):
+                # A1111 writes a "parameters" chunk, ComfyUI writes "prompt"/"workflow" chunks
+                generator_chunk = key.lower() in ("parameters", "prompt", "workflow", "dream", "sd-metadata")
+                generator_text = any(k in lower_val for k in ["negative prompt", "sampler", "cfg scale", "stable diffusion", "midjourney", "comfyui", "novelai"])
+                if generator_chunk or generator_text:
                     metadata["forensic_flags"].append({
                         "id": "png_ai_generation_chunks",
                         "severity": "high",
@@ -87,6 +90,46 @@ def extract_image_metadata(image_bytes: bytes, filename: str = "upload.jpg") -> 
                 elif tag_name == "LensModel":
                     metadata["lens_model"] = clean_val
 
+            # getexif() only returns IFD0 (Make/Model/DateTime). Capture settings live in the
+            # Exif sub-IFD and location in the GPS IFD, so read those explicitly.
+            exif_ifd = exif_data.get_ifd(0x8769)
+            for tag_id, value in exif_ifd.items():
+                tag_name = TAGS.get(tag_id, str(tag_id))
+                if tag_name in ("MakerNote", "UserComment"):
+                    metadata["raw_exif_tags"][tag_name] = f"<{len(value) if hasattr(value, '__len__') else '?'} bytes>"
+                    continue
+                metadata["raw_exif_tags"][tag_name] = str(value).strip('\x00')[:200]
+            metadata["exif_ifd_tag_count"] = len(exif_ifd)
+
+            def _num(v):
+                if isinstance(v, (tuple, list)):
+                    v = v[0] if len(v) == 1 else (v[0] / v[1] if len(v) == 2 and v[1] else None)
+                try:
+                    return float(v)
+                except (TypeError, ValueError, ZeroDivisionError):
+                    return None
+
+            if exif_ifd.get(0x829A) is not None:  # ExposureTime
+                t = _num(exif_ifd[0x829A])
+                metadata["exposure_time"] = (f"1/{round(1 / t)}" if t and t < 1 else str(t)) if t else str(exif_ifd[0x829A])
+            if exif_ifd.get(0x829D) is not None:  # FNumber
+                f = _num(exif_ifd[0x829D])
+                metadata["f_number"] = f"f/{f:g}" if f else str(exif_ifd[0x829D])
+            if exif_ifd.get(0x8827) is not None:  # ISOSpeedRatings / PhotographicSensitivity
+                iso = exif_ifd[0x8827]
+                metadata["iso_speed"] = str(iso[0] if isinstance(iso, (tuple, list)) else iso)
+            if exif_ifd.get(0x920A) is not None:  # FocalLength
+                fl = _num(exif_ifd[0x920A])
+                metadata["focal_length"] = f"{fl:g} mm" if fl else str(exif_ifd[0x920A])
+            if exif_ifd.get(0x9003):  # DateTimeOriginal
+                metadata["date_time_original"] = str(exif_ifd[0x9003]).strip('\x00')
+            if exif_ifd.get(0x9004):  # DateTimeDigitized
+                metadata["date_time_digitized"] = str(exif_ifd[0x9004]).strip('\x00')
+            if exif_ifd.get(0xA434):  # LensModel
+                metadata["lens_model"] = str(exif_ifd[0xA434]).strip('\x00')
+            if exif_data.get_ifd(0x8825):
+                metadata["has_gps"] = True
+
     except Exception as e:
         metadata["forensic_flags"].append({
             "id": "corrupt_header_parse_warning",
@@ -113,13 +156,14 @@ def extract_image_metadata(image_bytes: bytes, filename: str = "upload.jpg") -> 
                 metadata["software"] = str(tags["Image Software"])
             if "EXIF DateTimeOriginal" in tags and not metadata["date_time_original"]:
                 metadata["date_time_original"] = str(tags["EXIF DateTimeOriginal"])
-            if "EXIF ExposureTime" in tags:
+            # Only fill gaps: the Pillow sub-IFD values above are already formatted
+            if "EXIF ExposureTime" in tags and not metadata["exposure_time"]:
                 metadata["exposure_time"] = str(tags["EXIF ExposureTime"])
-            if "EXIF FNumber" in tags:
+            if "EXIF FNumber" in tags and not metadata["f_number"]:
                 metadata["f_number"] = str(tags["EXIF FNumber"])
-            if "EXIF ISOSpeedRatings" in tags:
+            if "EXIF ISOSpeedRatings" in tags and not metadata["iso_speed"]:
                 metadata["iso_speed"] = str(tags["EXIF ISOSpeedRatings"])
-            if "EXIF FocalLength" in tags:
+            if "EXIF FocalLength" in tags and not metadata["focal_length"]:
                 metadata["focal_length"] = str(tags["EXIF FocalLength"])
             if any(k.startswith("GPS") for k in tags):
                 metadata["has_gps"] = True
@@ -127,13 +171,22 @@ def extract_image_metadata(image_bytes: bytes, filename: str = "upload.jpg") -> 
         pass
 
     # Heuristic Forensic Evaluation
+    # 0. C2PA Content Credentials declaring AI generation (OpenAI, Adobe Firefly, Google, Microsoft)
+    if b"trainedAlgorithmicMedia" in image_bytes:
+        metadata["forensic_flags"].append({
+            "id": "c2pa_ai_source",
+            "severity": "high",
+            "title": "C2PA Content Credential: AI-Generated Source",
+            "detail": "Embedded C2PA manifest declares digitalSourceType 'trainedAlgorithmicMedia', written by AI image generators."
+        })
+
     # 1. Complete absence of EXIF in realistic photo
     if not metadata["has_exif"]:
         metadata["forensic_flags"].append({
             "id": "missing_exif",
-            "severity": "medium",
-            "title": "Stripped or Missing EXIF Hardware Tags",
-            "detail": "Image contains no camera hardware, lens, shutter, or sensor metadata. Typical of AI generator exports or social media compression."
+            "severity": "low",
+            "title": "No EXIF Hardware Tags",
+            "detail": "Image contains no camera hardware, lens, shutter, or sensor metadata. Normal for screenshots and social media / messaging downloads; not evidence of AI on its own."
         })
     else:
         # 2. Check for software editing signatures
@@ -147,6 +200,19 @@ def extract_image_metadata(image_bytes: bytes, filename: str = "upload.jpg") -> 
                     "title": f"Editing Software Signature Detected ({metadata['software']})",
                     "detail": f"Metadata explicitly records post-processing by '{metadata['software']}'."
                 })
+
+    # 2b. Camera make/model with no capture telemetry at all: real cameras and phones fill the Exif
+    # sub-IFD with dozens of tags (exposure, focal length, flash, etc.), so a bare Make/Model in IFD0
+    # is typical of hand-written (forged) EXIF
+    has_capture_data = any(metadata[k] for k in ("exposure_time", "f_number", "iso_speed", "focal_length")) \
+        or metadata["has_gps"] or metadata.get("exif_ifd_tag_count", 0) >= 5
+    if (metadata["camera_make"] or metadata["camera_model"]) and not has_capture_data:
+        metadata["forensic_flags"].append({
+            "id": "sparse_camera_exif",
+            "severity": "medium",
+            "title": "Camera Tags Without Capture Data",
+            "detail": "EXIF names a camera but has no exposure, focal length, GPS or other capture tags. Genuine camera files always include these, so the camera tags may have been added afterwards."
+        })
 
     # 3. Common AI generation square resolutions
     dims = metadata["dimensions"]

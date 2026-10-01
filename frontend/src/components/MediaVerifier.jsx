@@ -26,6 +26,7 @@ import ImageAnnotator from './ImageAnnotator';
 // Colour + short label helpers for the compact report panel
 const likelihoodStyle = (value = '') => {
   const v = value.toLowerCase();
+  if (v.includes('unknown')) return 'bg-sand-800 text-sand-300 border-sand-700';
   if (v.includes('high')) return 'bg-burgundy-600 text-white border-burgundy-600';
   if (v.includes('moderate') || v.includes('medium')) return 'bg-burgundy-950 text-burgundy-400 border-burgundy-700';
   return 'bg-olive-600 text-white border-olive-600';
@@ -52,6 +53,8 @@ export default function MediaVerifier({
   const [activeTab, setActiveTab] = useState('findings'); // 'findings' | 'exif' | 'next_steps'
   const [activeFindingId, setActiveFindingId] = useState(null);
   const [checkedSteps, setCheckedSteps] = useState({});
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState(null);
   const fileInputRef = useRef(null);
 
   const toggleCheck = (idx) => {
@@ -96,67 +99,34 @@ export default function MediaVerifier({
         ...data.report
       });
     } catch (err) {
-      console.warn('API call failed or proxy offline. Using heuristic evaluation.', err);
-      // Fallback: extract client-side metadata and use sample structure
-      setTimeout(() => {
-        setCurrentReport({
+      console.warn('API call failed or backend offline.', err);
+      // Backend unreachable: do not fabricate a verdict, report that no analysis ran
+      setCurrentReport({
+        filename: file.name,
+        metadata: {
           filename: file.name,
-          metadata: {
-            filename: file.name,
-            file_size_kb: Math.round(file.size / 1024),
-            mime_type: file.type,
-            dimensions: { width: 1024, height: 1024 },
-            has_exif: false,
-            camera_make: null,
-            camera_model: null,
-            software: null,
-            forensic_flags: [
-              {
-                id: "missing_exif",
-                severity: "medium",
-                title: "Stripped or Missing EXIF Tags",
-                detail: "No camera sensor or hardware shutter info found."
-              }
-            ]
-          },
-          summary: "Forensic inspection revealed missing sensor hardware metadata and localized high-frequency edge inconsistencies.",
-          verdict_category: "Likely Synthetic / Generated",
-          confidence: "Moderate",
-          confidence_explanation: "Corroborated by stripped sensor headers and micro-texture smoothing.",
-          findings: [
-            {
-              id: "focal_specular_reflection",
-              label: "Corneal Catchlight Geometry Anomaly",
-              category: "lighting",
-              suspicion_level: "high",
-              what_we_found: "Specular pupil reflections do not share a common light vector angle.",
-              why_suspicious: "Diffusion generators synthesize eye reflections independently rather than through a single optical camera plane.",
-              box_2d: [320, 360, 440, 640]
-            },
-            {
-              id: "focal_skin_texture",
-              label: "Micro-texture Smoothing",
-              category: "texture",
-              suspicion_level: "medium",
-              what_we_found: "Localized blur along facial perimeter contradicts sharp central focus.",
-              why_suspicious: "Latent inpainting models blend perimeter edges into background bokeh.",
-              box_2d: [480, 340, 720, 660]
-            }
-          ],
-          metadata_analysis: {
-            camera_info: "No hardware detected",
-            software_detected: "None recorded",
-            timestamp: "Not recorded",
-            risk_assessment: "Standard web export lacking camera telemetry."
-          },
-          "what_to_check_next": [
-            "Magnify pupils to 400% to evaluate catchlight reflection shape.",
-            "Inspect earlobe and teeth geometry for non-Euclidean artifacts.",
-            "Perform reverse image search to locate early web appearances."
-          ],
-          disclaimer: "VeriLens provides evidence and reasoning signals, not absolute proof of authenticity."
-        });
-      }, 800);
+          file_size_kb: Math.round(file.size / 1024),
+          mime_type: file.type,
+          has_exif: false,
+          forensic_flags: []
+        },
+        summary: "The VeriLens analysis server could not be reached, so this image was not analyzed. Start the backend and try again.",
+        verdict_category: "Inconclusive / Analysis Unavailable",
+        confidence: "Low",
+        confidence_explanation: `No analysis was performed (${err.message}).`,
+        findings: [],
+        metadata_analysis: {
+          camera_info: "Not analyzed",
+          software_detected: "Not analyzed",
+          timestamp: "Not analyzed",
+          risk_assessment: "Not analyzed"
+        },
+        what_to_check_next: [
+          "Make sure the backend is running (python main.py in the backend folder).",
+          "Re-upload the image once the server is available."
+        ],
+        disclaimer: "VeriLens provides evidence and reasoning signals, not absolute proof of authenticity."
+      });
     } finally {
       setLoading(false);
     }
@@ -175,6 +145,15 @@ export default function MediaVerifier({
 
   const getVerdictBadge = (category) => {
     const cat = (category || '').toLowerCase();
+    if (cat.includes('possibly')) {
+      return {
+        bg: 'bg-amber-950/80',
+        text: 'text-amber-300',
+        border: 'border-amber-800',
+        icon: AlertTriangle,
+        glow: 'glow-amber'
+      };
+    }
     if (cat.includes('synthetic') || cat.includes('generated')) {
       return {
         bg: 'bg-burgundy-600',
@@ -209,6 +188,49 @@ export default function MediaVerifier({
       icon: Info,
       glow: ''
     };
+  };
+
+  const downloadBlob = (blob, filename) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Sample presets use a URL path; uploads are already data URLs
+  const toDataUrl = async (src) => {
+    if (!src || src.startsWith('data:')) return src || null;
+    const blob = await (await fetch(src)).blob();
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const exportPdfReport = async () => {
+    if (!currentReport || pdfLoading) return;
+    setPdfLoading(true);
+    setPdfError(null);
+    try {
+      const response = await fetch('/api/report/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ report: currentReport, image_data_url: await toDataUrl(activeImageSrc) })
+      });
+      if (!response.ok) throw new Error(`Server returned ${response.status}`);
+      const disposition = response.headers.get('Content-Disposition') || '';
+      const filename = disposition.match(/filename="([^"]+)"/)?.[1] || `VeriLens_Report_${Date.now()}.pdf`;
+      downloadBlob(await response.blob(), filename);
+    } catch (err) {
+      console.warn('PDF report generation failed.', err);
+      setPdfError('Could not generate the PDF report. Is the backend running?');
+    } finally {
+      setPdfLoading(false);
+    }
   };
 
   const verdictStyles = getVerdictBadge(currentReport?.verdict_category);
@@ -365,11 +387,27 @@ export default function MediaVerifier({
                     <MessageSquare className="w-3.5 h-3.5" />
                     <span>Ask VeriLens</span>
                   </button>
+
+                  <button
+                    onClick={exportPdfReport}
+                    disabled={pdfLoading}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-sand-900 hover:bg-sand-800 text-sand-200 border border-sand-700 transition disabled:opacity-60 disabled:cursor-wait"
+                    title="Download a PDF report of this analysis"
+                  >
+                    {pdfLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
+                    <span>{pdfLoading ? 'Generating...' : 'PDF Report'}</span>
+                  </button>
                 </div>
 
                 <p className="text-sm text-sand-200 leading-relaxed">
                   {currentReport.summary}
                 </p>
+
+                {(pdfError || currentReport.api_notice) && (
+                  <p className="text-[11px] text-burgundy-400 bg-burgundy-950 border border-burgundy-800 rounded-lg px-2.5 py-1.5">
+                    {pdfError || currentReport.api_notice}
+                  </p>
+                )}
               </div>
 
               {/* Key facts */}
@@ -397,6 +435,7 @@ export default function MediaVerifier({
                 {[
                   ['findings', `Findings (${currentReport.findings?.length || 0})`],
                   ['exif', 'Camera Data'],
+                  ...(currentReport.edit_analysis ? [['edits', 'Edit Check']] : []),
                   ['next_steps', `Next Steps (${currentReport.what_to_check_next?.length || 0})`]
                 ].map(([id, label]) => (
                   <button
@@ -480,6 +519,54 @@ export default function MediaVerifier({
                   )}
                 </div>
               )}
+
+              {/* Edit check — was the photo changed after capture? */}
+              {activeTab === 'edits' && currentReport.edit_analysis && (() => {
+                const edit = currentReport.edit_analysis;
+                const tone = {
+                  red: 'bg-burgundy-600 text-white border-burgundy-600',
+                  amber: 'bg-burgundy-950 text-burgundy-400 border-burgundy-700',
+                  green: 'bg-olive-600 text-white border-olive-600',
+                  grey: 'bg-sand-800 text-sand-300 border-sand-700'
+                }[edit.tone] || 'bg-sand-800 text-sand-300 border-sand-700';
+                const strengthStyle = {
+                  strong: 'text-burgundy-400 border-burgundy-600',
+                  moderate: 'text-burgundy-400 border-burgundy-700',
+                  weak: 'text-olive-400 border-olive-600',
+                  info: 'text-sand-400 border-sand-700'
+                };
+                return (
+                  <div className="space-y-3 text-xs">
+                    <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-sand-950 border border-sand-800">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${tone}`}>{edit.verdict}</span>
+                      <span className="font-mono text-sand-400">{edit.edit_probability}% edit likelihood</span>
+                    </div>
+
+                    <p className="text-sand-300 leading-relaxed">{edit.summary}</p>
+
+                    {edit.signals?.length > 0 && (
+                      <div className="space-y-1.5">
+                        {edit.signals.map((sig, i) => (
+                          <div key={i} className={`border-l-2 pl-2.5 py-0.5 ${strengthStyle[sig.strength] || strengthStyle.info}`}>
+                            <span className="font-semibold">{sig.title}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {edit.ela_heatmap && (
+                      <details>
+                        <summary className="font-semibold text-olive-400 cursor-pointer select-none">Show error-level heatmap</summary>
+                        <div className="mt-2 grid grid-cols-2 gap-2">
+                          {activeImageSrc && <img src={activeImageSrc} alt="Original" className="w-full rounded-lg border border-sand-800" />}
+                          <img src={edit.ela_heatmap} alt="ELA heatmap" className="w-full rounded-lg border border-sand-800" />
+                        </div>
+                        <p className="mt-1.5 text-[11px] text-sand-500">Regions much brighter or darker than their surroundings may have been pasted or retouched.</p>
+                      </details>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Next steps — simple checklist */}
               {activeTab === 'next_steps' && (
