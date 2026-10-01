@@ -28,6 +28,7 @@ from sample_data import SAMPLE_CASES, SAMPLE_LIVENESS_REPORT
 import ai_detector_service
 from report_service import build_pdf_report, report_filename
 from edit_service import analyze_edits, combine_edit_analysis
+from video_service import analyze_video
 
 # Runs the local AI detector alongside the Gemini request
 detector_pool = ThreadPoolExecutor(max_workers=4)
@@ -150,6 +151,25 @@ async def analyze_media(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+@app.post("/api/analyze-video")
+async def analyze_video_endpoint(
+    file: UploadFile = File(...),
+    api_key: Optional[str] = Form(None),
+    x_gemini_api_key: Optional[str] = Header(None)
+):
+    try:
+        content = await file.read()
+        if not content:
+            raise HTTPException(status_code=400, detail="Empty file uploaded")
+        result = await asyncio.to_thread(
+            analyze_video, content, file.filename or "upload.mp4", file.content_type or "video/mp4", api_key or x_gemini_api_key
+        )
+        return {"success": True, **result}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Video analysis failed: {str(e)}")
 
 @app.post("/api/report/pdf")
 async def report_pdf(payload: ReportRequest):

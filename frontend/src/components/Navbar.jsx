@@ -1,29 +1,30 @@
 import React from 'react';
-import { 
-  ShieldCheck, 
-  Scan, 
-  Key, 
-  HelpCircle, 
-  Radio, 
-  CheckCircle2, 
+import {
+  ShieldCheck,
+  Scan,
+  Key,
+  HelpCircle,
+  Radio,
+  CheckCircle2,
   AlertCircle,
   Camera,
   Layers,
   Compass,
-  Shield
+  Shield,
+  Film
 } from 'lucide-react';
 
-export default function Navbar({ 
-  activeTab, 
-  setActiveTab, 
-  onOpenApiKeyModal, 
-  hasApiKey, 
+export default function Navbar({
+  activeTab,
+  setActiveTab,
+  onOpenApiKeyModal,
+  hasApiKey,
 }) {
   return (
     <header className="sticky top-0 z-40 w-full bg-burgundy-600 shadow-md shadow-burgundy-900/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
+
           {/* Brand Logo & Philosophy Tag */}
           <div className="flex items-center space-x-3">
             <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 border border-white/25 text-white">
@@ -69,6 +70,18 @@ export default function Navbar({
             </button>
 
             <button
+              onClick={() => setActiveTab('video')}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                activeTab === 'video'
+                  ? 'bg-gradient-to-r from-burgundy-600 to-burgundy-600 text-white shadow-md shadow-olive-900/40'
+                  : 'text-sand-400 hover:text-sand-200 hover:bg-sand-800/60'
+              }`}
+            >
+              <Film className="w-3.5 h-3.5" />
+              <span>Video Check</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('zk')}
               className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                 activeTab === 'zk'
@@ -111,7 +124,7 @@ export default function Navbar({
             <button
               onClick={onOpenApiKeyModal}
               className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap border transition ${
-                hasApiKey 
+                hasApiKey
                   ? 'border-olive-600 bg-olive-600 text-white hover:bg-olive-500'
                   : 'border-sand-900 bg-sand-900 text-sand-300 hover:text-burgundy-400'
               }`}
@@ -145,6 +158,14 @@ export default function Navbar({
               }`}
             >
               Live Check
+            </button>
+            <button
+              onClick={() => setActiveTab('video')}
+              className={`px-3 py-1 rounded text-xs font-semibold ${
+                activeTab === 'video' ? 'bg-burgundy-600 text-white' : 'text-white/70'
+              }`}
+            >
+              Video
             </button>
             <button
               onClick={() => setActiveTab('zk')}

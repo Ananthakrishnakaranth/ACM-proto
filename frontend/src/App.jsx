@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import MediaVerifier from './components/MediaVerifier';
 import LiveLiveness from './components/LiveLiveness';
+import VideoVerifier from './components/VideoVerifier';
 import ApiKeyModal from './components/ApiKeyModal';
 import PhilosophyPage from './components/PhilosophyPage';
 import RoadmapPage from './components/RoadmapPage';
@@ -73,6 +74,8 @@ export default function App() {
             setActiveImageSrc={setActiveImageSrc}
           />
         )}
+
+        {activeTab === 'video' && <VideoVerifier apiKey={apiKey} />}
 
         {activeTab === 'liveness' && (
           <LiveLiveness

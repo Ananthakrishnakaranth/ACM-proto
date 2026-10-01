@@ -173,17 +173,23 @@ def clean_json_response(raw_text: str) -> Dict[str, Any]:
     return json.loads(text)
 
 # Speed settings for the media analysis Gemini call
-MEDIA_MODELS = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.7-flash", "gemini-3.8-flash"]
-GEMINI_PARALLEL = 2          # models raced at the same time; first valid answer wins
+MEDIA_MODELS = ["gemini-2.5-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.7-flash", "gemini-3.8-flash", "gemini-flash-lite-latest"]
+GEMINI_PARALLEL = 2          # max models in flight at once (a backup starts only if needed)
+GEMINI_HEDGE_DELAY_S = 10   # start the backup model if the first hasn't answered by then
 GEMINI_CALL_TIMEOUT_S = 40   # give up on a single model call after this long
 GEMINI_DEADLINE_S = 50       # give up on Gemini entirely; detector + metadata verdict is used instead
 GEMINI_THINKING_BUDGET = 512 # caps hidden reasoning tokens, the main source of latency
 _last_good_model: Optional[str] = None
 
+def _is_quota_error(e: Exception) -> bool:
+    text = str(e)
+    return "429" in text or "RESOURCE_EXHAUSTED" in text
+
 def _race_models(call, models: List[str], deadline_s: float):
-    """Runs `call(model)` on up to GEMINI_PARALLEL models at once and returns (result, model) from the first
-    that succeeds. A failed model is immediately replaced by the next one. The model that answered last time
-    is tried first, so overloaded models aren't retried on every upload."""
+    """Hedged requests: starts with one model and only adds a backup model if the first fails or hasn't
+    answered within GEMINI_HEDGE_DELAY_S (at most GEMINI_PARALLEL in flight). Returns (result, model) from the
+    first success. This keeps the speed benefit of racing without spending double quota on every upload.
+    The model that answered last time is tried first."""
     global _last_good_model
     queue = list(models)
     if _last_good_model in queue:
@@ -194,20 +200,28 @@ def _race_models(call, models: List[str], deadline_s: float):
     pending = {}
     started = time.time()
     last_error: Optional[Exception] = None
+    quota_errors = 0
 
     def launch():
         if queue:
             model = queue.pop(0)
             pending[pool.submit(call, model)] = model
 
-    for _ in range(GEMINI_PARALLEL):
-        launch()
+    launch()
+    hedged = False
     try:
         while pending:
-            remaining = deadline_s - (time.time() - started)
+            elapsed = time.time() - started
+            remaining = deadline_s - elapsed
             if remaining <= 0:
                 raise TimeoutError(f"Gemini did not answer within {deadline_s}s (servers busy)")
-            done, _ = wait(pending, timeout=remaining, return_when=FIRST_COMPLETED)
+            timeout = remaining if hedged else min(remaining, max(0.1, GEMINI_HEDGE_DELAY_S - elapsed))
+            done, _ = wait(pending, timeout=timeout, return_when=FIRST_COMPLETED)
+            if not done:
+                if not hedged and len(pending) < GEMINI_PARALLEL:
+                    hedged = True
+                    launch()  # first model is slow: start a backup
+                continue
             for future in done:
                 model = pending.pop(future)
                 try:
@@ -218,9 +232,13 @@ def _race_models(call, models: List[str], deadline_s: float):
                 except Exception as e:
                     print(f"Gemini {model} failed after {time.time() - started:.1f}s: {str(e)[:120]}")
                     last_error = e
+                    quota_errors += _is_quota_error(e)
                     if model == _last_good_model:
                         _last_good_model = None
-                    launch()
+                    launch()  # quota is per model, so the next model may still have capacity
+        if last_error and quota_errors and _is_quota_error(last_error):
+            raise RuntimeError("Gemini free-tier quota exhausted for this API key (429). Wait for the quota to reset, "
+                               "use another key, or enable billing in Google AI Studio.") from last_error
         raise last_error or RuntimeError("No Gemini models responded")
     finally:
         # Don't wait for slower calls still in flight; their results are simply discarded
@@ -251,6 +269,12 @@ def _heuristic_with_detector(metadata: Dict[str, Any], image_bytes: bytes, detec
     if detector:
         report = finalize_media_report(report, metadata, detector=detector, use_model_probability=False)
         report["api_notice"] = notice + " Verdict is based on metadata plus the local neural AI detector."
+        if not any(f.get("id") in ("fnd_png_generation_chunks", "fnd_c2pa_ai_source", "fnd_ai_software") for f in report.get("findings", [])):
+            score = round(detector["ai_score"] * 100)
+            report["summary"] = (f"The local neural AI detector scored this image {score}% likely AI-generated; no AI-generator "
+                                 "signatures were found in the metadata. Gemini visual reasoning was not available for this run.")
+            report["confidence_explanation"] = (f"Based on the neural detector and metadata only (AI probability {report['ai_probability']}%). "
+                                                "Run again with Gemini available for a fuller visual assessment.")
     else:
         report["api_notice"] = notice + " Pixels were not inspected (metadata-only)."
     return report
@@ -294,7 +318,7 @@ def analyze_media_with_gemini(
     except Exception as e:
         print(f"Gemini API call failed: {e}. Falling back to heuristic engine.")
         return _heuristic_with_detector(metadata_summary, image_bytes, _detector_result(detector_future),
-                                        f"Gemini visual analysis unavailable ({str(e)[:160]}).")
+                                        f"Gemini visual analysis unavailable ({str(e)[:300]}).")
 
 def analyze_liveness_with_gemini(
     frames: Dict[str, bytes],
@@ -397,6 +421,7 @@ User Question: {user_query}
 AI_SOFTWARE_MARKERS = [
     "midjourney", "dall-e", "dalle", "stable diffusion", "stablediffusion", "comfyui",
     "automatic1111", "novelai", "firefly", "leonardo", "ideogram", "flux", "imagen", "openai",
+    "ai video tool",  # set by video_service when container tags name Sora, Runway, Kling, etc.
 ]
 # Share of the final AI probability taken from the local neural detector (rest from Gemini's visual read)
 DETECTOR_WEIGHT = 0.6

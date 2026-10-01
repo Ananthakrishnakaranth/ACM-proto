@@ -115,6 +115,36 @@ def _annotated_image(img: Image.Image, findings: List[Dict[str, Any]]) -> Image.
     return img
 
 
+def _contact_sheet(frames: List[Dict[str, Any]]) -> Optional[Image.Image]:
+    """Grid of sampled video frames, each labelled with its timestamp and neural AI score."""
+    tiles = []
+    for f in frames:
+        img = _decode_image(f.get("image"))
+        if img is not None:
+            tiles.append((img, f.get("t"), f.get("ai_score")))
+    if not tiles:
+        return None
+    cols, tile_w = 4, 320
+    tile_h = round(tile_w * tiles[0][0].height / tiles[0][0].width)
+    label_h = 30
+    rows = (len(tiles) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * tile_w + (cols + 1) * 8, rows * (tile_h + label_h) + (rows + 1) * 8), "white")
+    draw = ImageDraw.Draw(sheet)
+    try:
+        font = ImageFont.truetype(os.path.join(_WIN_FONTS, "arialbd.ttf"), 17)
+    except Exception:
+        font = ImageFont.load_default()
+    for i, (img, t, score) in enumerate(tiles):
+        x = 8 + (i % cols) * (tile_w + 8)
+        y = 8 + (i // cols) * (tile_h + label_h + 8)
+        sheet.paste(img.resize((tile_w, tile_h)), (x, y))
+        rgb = (148, 163, 184) if score is None else (220, 38, 38) if score >= 0.7 else (217, 119, 6) if score >= 0.45 else (22, 163, 74)
+        draw.rectangle((x, y + tile_h, x + tile_w, y + tile_h + label_h), fill=rgb)
+        stamp = f"{int(t // 60)}:{int(t % 60):02d}" if t is not None else "-"
+        draw.text((x + 8, y + tile_h + 6), f"{stamp}   {'n/a' if score is None else f'{round(score * 100)}% AI'}", fill="white", font=font)
+    return sheet
+
+
 def _rl_image(img: Image.Image, max_w: float, max_h: float) -> RLImage:
     buf = io.BytesIO()
     img.save(buf, "JPEG", quality=88)
@@ -173,9 +203,10 @@ def build_pdf_report(report: Dict[str, Any], image_data_url: Optional[str] = Non
     width = A4[0] - 36 * mm
 
     story: List[Any] = []
+    is_video = bool(report.get("frames")) or md.get("duration_s") is not None
 
     # Header
-    story.append(Paragraph("VeriLens Forensic Analysis Report", styles["title"]))
+    story.append(Paragraph("VeriLens Video Forensic Report" if is_video else "VeriLens Forensic Analysis Report", styles["title"]))
     story.append(_p(f"Report ID {report_id}   |   Generated {now:%d %b %Y, %H:%M}   |   File: {report.get('filename') or md.get('filename') or 'upload'}", "subtitle"))
     story.append(Spacer(1, 6))
     story.append(Table([[""]], colWidths=[width], rowHeights=[1.2], style=[("BACKGROUND", (0, 0), (-1, -1), ACCENT)]))
@@ -240,8 +271,33 @@ def build_pdf_report(report: Dict[str, Any], image_data_url: Optional[str] = Non
         ["Software", md.get("software") or "None recorded"],
         ["GPS location", "Present" if md.get("has_gps") else "Not present"],
     ]
-    story.append(Paragraph("Evidence Image & File Details", styles["h2"]))
-    if img is not None:
+    if is_video:
+        facts = [
+            ["File name", md.get("filename") or report.get("filename")],
+            ["Format", f"{md.get('format') or '-'} ({md.get('codec') or '-'})"],
+            ["Resolution", f"{dims.get('width')} x {dims.get('height')} px" if dims.get("width") else "-"],
+            ["Duration", f"{md.get('duration_s')} s @ {md.get('fps') or '?'} fps" if md.get("duration_s") else "-"],
+            ["Audio track", "Yes" if md.get("has_audio") else "No"],
+            ["File size", f"{md.get('file_size_kb')} KB" if md.get("file_size_kb") is not None else "-"],
+            ["MD5 hash", md.get("md5_hash")],
+            ["Recording device", camera or "Not recorded"],
+            ["Created at", md.get("date_time_original") or "Not recorded"],
+            ["Encoder / software", md.get("software") or "None recorded"],
+            ["Gemini input", report.get("gemini_input") or "Not analysed"],
+        ]
+        story.append(Paragraph("Video Details", styles["h2"]))
+        story.append(_kv_table(facts, [35 * mm, width - 35 * mm]))
+        sheet = _contact_sheet(report.get("frames") or [])
+        if sheet is not None:
+            story.append(KeepTogether([
+                Paragraph("Sampled Frames", styles["h2"]),
+                _rl_image(sheet, width, 72 * mm),
+                Spacer(1, 3),
+                _p("Evenly spaced frames, each labelled with its timestamp and the neural detector's AI score "
+                   "(green < 45%, amber 45-69%, red >= 70%).", "small"),
+            ]))
+    elif img is not None:
+        story.append(Paragraph("Evidence Image & File Details", styles["h2"]))
         annotated = _annotated_image(img, findings)
         left = [_rl_image(annotated, width * 0.48, 95 * mm)]
         if any(f.get("_box_number") for f in findings):
@@ -250,6 +306,7 @@ def build_pdf_report(report: Dict[str, Any], image_data_url: Optional[str] = Non
         side.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0)]))
         story.append(side)
     else:
+        story.append(Paragraph("File Details", styles["h2"]))
         story.append(_kv_table(facts, [35 * mm, width - 35 * mm]))
 
     # Signal breakdown
@@ -266,8 +323,7 @@ def build_pdf_report(report: Dict[str, Any], image_data_url: Optional[str] = Non
     ]
     if report.get("probability_breakdown"):
         signals.append(["How the AI probability was calculated", "\n".join(report["probability_breakdown"])])
-    story.append(Paragraph("Signal Breakdown", styles["h2"]))
-    story.append(_kv_table(signals, [45 * mm, width - 45 * mm]))
+    story.append(KeepTogether([Paragraph("Signal Breakdown", styles["h2"]), _kv_table(signals, [45 * mm, width - 45 * mm])]))
 
     # Editing analysis
     edit = report.get("edit_analysis")
@@ -322,6 +378,9 @@ def build_pdf_report(report: Dict[str, Any], image_data_url: Optional[str] = Non
         level = (f.get("suspicion_level") or "neutral").lower()
         badge = ParagraphStyle("b", parent=styles["label"], textColor=LEVEL_COLORS.get(level, MUTED))
         num = f"[{f['_box_number']}] " if f.get("_box_number") else ""
+        ts = f.get("timestamp")
+        if isinstance(ts, (int, float)):
+            num += f"[{int(ts // 60)}:{int(ts % 60):02d}] "
         block = [
             Table([[Paragraph(escape(num + (f.get("label") or "Finding")), styles["finding_title"]),
                     Paragraph(escape(f"{level.upper()} SUSPICION  |  {(f.get('category') or '').upper()}"), badge)]],
